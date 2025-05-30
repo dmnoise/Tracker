@@ -32,12 +32,6 @@ final class SplashScreen: UIViewController {
         delegate?.switchToTabBar()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
-    }
-    
     // MARK: - Private methods
     private func setupUI() {
         view.backgroundColor = UIColor(resource: .yaBlue)
