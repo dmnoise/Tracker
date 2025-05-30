@@ -68,7 +68,7 @@ class TrackerViewController: UIViewController {
     private var selectedDate = Date()
     private var categories: [TrackerCategory]?
     private var visibleCategories: [TrackerCategory]?
-    private var completedTrackers: [TrackerRecord]?
+    private var completedTrackers: Set<TrackerRecord> = []
 
     private let loadTrackersService = LoadTrackersService.shared
     
@@ -90,8 +90,6 @@ class TrackerViewController: UIViewController {
     private func loadData() {
         categories = loadTrackersService.loadData()
         updateVisibleTrackers()
-        
-        completedTrackers = [TrackerRecord]() // TODO: убрать это
     }
     
     private func setupUI() {
@@ -168,13 +166,11 @@ class TrackerViewController: UIViewController {
     }
     
     private func countOfCompleted(for trackerID: UUID) -> Int {
-        guard let completedTrackers = completedTrackers else { return 0 }
         
-        return completedTrackers.filter { $0.trackerID == trackerID }.count
+        completedTrackers.filter { $0.trackerID == trackerID }.count
     }
     
     private func isCompleted(for trackerID: UUID, on date: Date) -> Bool {
-        guard let completedTrackers = completedTrackers else { return false }
         
         return completedTrackers.contains {
             $0.trackerID == trackerID &&
@@ -222,15 +218,9 @@ extension TrackerViewController: TrackerCellDelegate {
         let tracker = TrackerRecord(trackerID: trackerID, date: selectedDate)
         
         if isCompleted {
-            completedTrackers?.append(tracker)
+            completedTrackers.insert(tracker)
         } else {
-            if let index = completedTrackers?.firstIndex(
-                where: {
-                    $0.trackerID == trackerID
-                    && Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
-                }) {
-                completedTrackers?.remove(at: index)
-            }
+            completedTrackers.remove(tracker)
         }
         
         cell.changeCompletedButtonStatus()
