@@ -220,11 +220,17 @@ extension TrackerViewController: TrackerCellDelegate {
         else { return }
         
         let tracker = TrackerRecord(trackerID: trackerID, date: selectedDate)
-       
+        
         if isCompleted {
             completedTrackers?.append(tracker)
         } else {
-            completedTrackers?.removeLast()
+            if let index = completedTrackers?.firstIndex(
+                where: {
+                    $0.trackerID == trackerID
+                    && Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
+                }) {
+                completedTrackers?.remove(at: index)
+            }
         }
         
         cell.changeCompletedButtonStatus()

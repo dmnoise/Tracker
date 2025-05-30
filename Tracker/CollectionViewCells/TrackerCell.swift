@@ -72,7 +72,7 @@ final class TrackerCell: UICollectionViewCell {
     private var isCompleted = false
     private var countDays: Int = 0 {
         didSet {
-            counterDaysLabel.text = "\(countDays) дней"
+            counterDaysLabel.text = "\(countDays) \(dayWord(for: countDays))"
         }
     }
     
@@ -92,7 +92,6 @@ final class TrackerCell: UICollectionViewCell {
         cardView.backgroundColor = tracker.color
         addButton.backgroundColor = tracker.color
        
-        counterDaysLabel.text = "\(countDays) дней"
         isCompleted = isCompletedToday
         
         self.countDays = countDays
@@ -101,15 +100,19 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     func changeCompletedButtonStatus() {
-        isCompleted.toggle()
-        updateCompletedButtonStatus()
         
-        if isCompleted {
-            countDays += 1
-        } else {
-            countDays -= 1
-        }
+        isCompleted.toggle()
+        countDays += isCompleted ? 1 : -1
+        
+        updateCompletedButtonStatus()
     }
+    
+    // MARK: - objc
+    @objc private func didTapCompledetButton() {
+      
+        delegate?.didTapCompletedButton(self, isCompleted: !isCompleted)
+    }
+    
     
     // MARK: - Private Methods
     private func setupUI() {
@@ -121,6 +124,7 @@ final class TrackerCell: UICollectionViewCell {
         
         addButton.addTarget(self, action: #selector(didTapCompledetButton), for: .touchUpInside)
     }
+    
     private func updateCompletedButtonStatus() {
         
         let imageName = isCompleted ? "checkmark" : "plus"
@@ -130,9 +134,22 @@ final class TrackerCell: UICollectionViewCell {
         addButton.layer.opacity = opacity
     }
     
-    @objc private func didTapCompledetButton() {
-      
-        delegate?.didTapCompletedButton(self, isCompleted: !isCompleted)
+    private func dayWord(for number: Int) -> String {
+        let remainder10 = number % 10
+        let remainder100 = number % 100
+        
+        if remainder100 >= 11 && remainder100 <= 14 {
+            return "дней"
+        }
+        
+        switch remainder10 {
+        case 1:
+            return "день"
+        case 2, 3, 4:
+            return "дня"
+        default:
+            return "дней"
+        }
     }
     
     private func setupConstraint() {
