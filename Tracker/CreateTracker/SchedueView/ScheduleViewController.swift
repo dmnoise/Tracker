@@ -67,7 +67,6 @@ final class ScheduleViewController: UIViewController {
         setupTableView()
         
         saveButton.addTarget(self, action: #selector(didTapSavedButton), for: .touchUpInside)
-        saveButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
     }
     
     // MARK: - Private methods
@@ -104,10 +103,6 @@ final class ScheduleViewController: UIViewController {
     @objc private func didTapSavedButton() {
 
         delegate?.updateSelectedDays(weekdays: selectedDays)
-        dismiss(animated: true)
-    }
-    
-    @objc private func didTapCancelButton() {
         dismiss(animated: true)
     }
 }

@@ -153,6 +153,8 @@ final class CreateHabitViewController: UIViewController {
     // MARK: - Private methods
     private func addTratgets() {
         scheduleView.addTarget(self, action: #selector(didTapScheduleButton), for: .touchUpInside)
+        
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
     }
     
@@ -232,6 +234,10 @@ final class CreateHabitViewController: UIViewController {
     
     @objc private func didTapCreateButton() {
         limitLabel(isHidden: false)
+    }
+    
+    @objc private func didTapCancelButton() {
+        dismiss(animated: true)
     }
 }
 
