@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol CreateHabitViewControllerProotocol: AnyObject {
+protocol CreateHabitViewControllerProtocol: AnyObject {
     func updateSelectedDays(weekdays: Set<Weekday>)
 }
 
@@ -242,7 +242,7 @@ final class CreateHabitViewController: UIViewController {
 }
 
 // MARK: - CreateHabitViewControllerProotocol
-extension CreateHabitViewController: CreateHabitViewControllerProotocol {
+extension CreateHabitViewController: CreateHabitViewControllerProtocol {
     func updateSelectedDays(weekdays: Set<Weekday>) {
         
         selectedDays = weekdays
