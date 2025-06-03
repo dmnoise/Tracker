@@ -226,7 +226,6 @@ final class CreateHabitViewController: UIViewController {
         let vc = UINavigationController(
             rootViewController: ScheduleViewController(delegate: self, selectedDays: selectedDays)
         )
-        vc.presentationController?.delegate = self
         
         present(vc, animated: true)
     }
@@ -242,15 +241,6 @@ extension CreateHabitViewController: CreateHabitViewControllerProotocol {
         
         selectedDays = weekdays
         scheduleView.setSubtitle(selectedDays.shortNamesString)
-    }
-}
-
-// MARK: - UIAdaptivePresentationControllerDelegate
-extension CreateHabitViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        
-        scheduleView.setSubtitle(selectedDays.shortNamesString)
-        print("Смахнул вниз палицем")
     }
 }
 
