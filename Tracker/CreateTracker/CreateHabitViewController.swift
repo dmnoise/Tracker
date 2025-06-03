@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CreateHabitViewControllerProotocol: AnyObject {
+    func updateSelectedDays(weekdays: Set<Weekday>)
+}
+
 final class CreateHabitViewController: UIViewController {
     
     // MARK: - UI
@@ -23,7 +27,7 @@ final class CreateHabitViewController: UIViewController {
         let obj = UITextField()
         obj.placeholder = "Введите название трекера"
         obj.font = UIFont.systemFont(ofSize: 17)
-        obj.backgroundColor = .yaGray
+        obj.backgroundColor = .fieldBackground
         obj.layer.cornerRadius = 16
         
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
@@ -35,27 +39,28 @@ final class CreateHabitViewController: UIViewController {
         return obj
     }()
     
-    private let stackView: UIStackView = {
-        let obj = UIStackView()
-        obj.axis = .vertical
-        obj.backgroundColor = .yaGray
-        obj.layer.cornerRadius = 16
-        obj.alignment = .fill
-        obj.distribution = .fillProportionally
-        obj.spacing = 0
-        
-        obj.isLayoutMarginsRelativeArrangement = true
-        obj.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    private var limitHeightConstraint: NSLayoutConstraint?
+    private let limitOfSymbols: UILabel = {
+        let obj = UILabel()
+        obj.font = UIFont.systemFont(ofSize: 17)
+        obj.textColor = .lightRed
+        obj.text = "Ограничение 38 символов"
+        obj.isHidden = true
         
         return obj
     }()
     
-    private let categoryButton: UIButton = {
-        let obj = UIButton()
-        obj.setTitle("Категория", for: .normal)
-        obj.setTitleColor(.yaBlack, for: .normal)
-        obj.setTitleColor(.gray, for: .highlighted)
-        obj.contentHorizontalAlignment = .left
+    private let stackView: UIStackView = {
+        let obj = UIStackView()
+        obj.axis = .vertical
+        obj.backgroundColor = .fieldBackground
+        obj.layer.cornerRadius = 16
+        obj.alignment = .fill
+        obj.distribution = .fill
+        obj.spacing = 0
+        
+        obj.isLayoutMarginsRelativeArrangement = true
+        obj.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         return obj
     }()
@@ -68,22 +73,67 @@ final class CreateHabitViewController: UIViewController {
         return obj
     }()
     
-    private let scheduleButton: UIButton = {
-        let obj = UIButton()
-        obj.setTitle("Расписание", for: .normal)
-        obj.setTitleColor(.yaBlack, for: .normal)
-        obj.setTitleColor(.gray, for: .highlighted)
-        obj.contentHorizontalAlignment = .left
-        
-        return obj
-    }()
-    
     private let collectionView: UICollectionView = {
         let obj = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         obj.backgroundColor = .clear
         
+        obj.isHidden = true // TODO: Что-то меня понесло, тут это пока скроем
+        
         return obj
     }()
+    
+    private let cancelButton: UIButton = {
+        let obj = UIButton()
+        obj.setTitle("Отменить", for: .normal)
+        obj.setTitleColor(.lightRed, for: .normal)
+        obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        obj.backgroundColor = .yaWhite
+        obj.layer.borderWidth = 1
+        obj.layer.borderColor = UIColor(resource: .lightRed).cgColor
+        obj.layer.cornerRadius = 16
+        
+        return obj
+    }()
+    
+    private let createButton: UIButton = {
+        let obj = UIButton()
+        obj.setTitle("Создать", for: .normal)
+        obj.setTitleColor(.yaWhite, for: .normal)
+        obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        obj.backgroundColor = .yaDarkGray
+        obj.layer.cornerRadius = 16
+        
+        return obj
+    }()
+    
+    private let hStackButtoons: UIStackView = {
+        let obj = UIStackView()
+        obj.axis = .horizontal
+        obj.distribution = .fillProportionally
+        obj.spacing = 8
+        
+        return obj
+    }()
+    
+    private let emoji: [Character] = [
+        "🙂","😻","🌺","🐶","❤️","😱",
+        "😇","😡","🥶","🤔","🙌","🍔",
+        "🥦","🏓","🥇","🎸","🏝️","😪"
+    ]
+    
+    private let color: [UIColor] = [
+        .cLightRed, .cOrange, .cBlue, .cPurple, .cGreen, .cPink,
+        .cPastel, .cLightBlue, .cLightGreen, .cDarkBlue, .cRed, .cLightPink,
+        .cBeige, .cAnotherBlue, .cLilac, .cLightLilac, .cAnotherLilac, .cAnotherGreen
+    ]
+    
+    private let param = GeometricParams(cellCount: 6, leftInset: 0, rightInset: 0, cellSpacing: 20)
+    
+    private var selectedDays: Set<Weekday> = []
+    
+    private let categoryView = HabitOptionView(title: "Категория")
+    private let scheduleView = HabitOptionView(title: "Расписание")
+
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -92,23 +142,32 @@ final class CreateHabitViewController: UIViewController {
         setupUI()
         setupConstraints()
         setupCollectionView()
+        addTratgets()
+        
+        categoryView.setSubtitle("Важное")
+        scheduleView.setSubtitle(selectedDays.shortNamesString)
         
         view.addTapGestureToHideKeyboard()
     }
     
     // MARK: - Private methods
+    private func addTratgets() {
+        scheduleView.addTarget(self, action: #selector(didTapScheduleButton), for: .touchUpInside)
+        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
+    }
+    
     private func setupUI() {
         view.backgroundColor = .white
         navigationItem.titleView = titleLabel
         
-        view.addSubviews(nameTextField, stackView, collectionView)
+        view.addSubviews(nameTextField, limitOfSymbols, stackView, collectionView, hStackButtoons)
         
-        stackView.addArrangedSubview(categoryButton)
+        stackView.addArrangedSubview(categoryView)
         stackView.addArrangedSubview(separatorView)
-        stackView.addArrangedSubview(scheduleButton)
+        stackView.addArrangedSubview(scheduleView)
         
-        addChevron(to: categoryButton)
-        addChevron(to: scheduleButton)
+        hStackButtoons.addArrangedSubview(cancelButton)
+        hStackButtoons.addArrangedSubview(createButton)
     }
     
     private func setupCollectionView() {
@@ -122,56 +181,80 @@ final class CreateHabitViewController: UIViewController {
     }
     
     private func setupConstraints() {
+        
+        limitHeightConstraint = limitOfSymbols.heightAnchor.constraint(equalToConstant: 0)
+        limitHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             nameTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             
-            stackView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 24),
+            limitOfSymbols.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 8),
+            limitOfSymbols.centerXAnchor.constraint(equalTo: nameTextField.centerXAnchor),
+   
+            stackView.topAnchor.constraint(equalTo: limitOfSymbols.bottomAnchor, constant: 24),
             stackView.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
-            stackView.heightAnchor.constraint(equalToConstant: 150),
-            
-            separatorView.heightAnchor.constraint(equalToConstant: 1),
+     
+            separatorView.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale),
             
             collectionView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 32),
             collectionView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            hStackButtoons.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
+            hStackButtoons.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
+            hStackButtoons.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            createButton.heightAnchor.constraint(equalToConstant: 60),
+            cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
-    private func addChevron(to button: UIButton) {
-        let chevron = UIImageView()
-        chevron.image = UIImage(systemName: "chevron.right")
-        chevron.tintColor = .yaDarkGray
+    private func limitLabel(isHidden: Bool) {
         
-        button.addSubviews(chevron)
-        
-        NSLayoutConstraint.activate([
-            chevron.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            chevron.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16),
-            chevron.widthAnchor.constraint(equalToConstant: 12),
-            chevron.heightAnchor.constraint(equalToConstant: 20)
-        ])
+        limitHeightConstraint?.constant = isHidden ? 0 : 22
+        limitOfSymbols.isHidden = isHidden
     }
     
-    let emoji: [Character] = [
-        "🙂","😻","🌺","🐶","❤️","😱",
-        "😇","😡","🥶","🤔","🙌","🍔",
-        "🥦","🏓","🥇","🎸","🏝️","😪"
-    ]
+    // MARK: - objc
+    @objc private func didTapScheduleButton() {
+        
+        let vc = UINavigationController(
+            rootViewController: ScheduleViewController(delegate: self, selectedDays: selectedDays)
+        )
+        vc.presentationController?.delegate = self
+        
+        present(vc, animated: true)
+    }
     
-    let color: [UIColor] = [
-        .cLightRed, .cOrange, .cBlue, .cPurple, .cGreen, .cPink,
-        .cPastel, .cLightBlue, .cLightGreen, .cDarkBlue, .cRed, .cLightPink,
-        .cBeige, .cAnotherBlue, .cLilac, .cLightLilac, .cAnotherLilac, .cAnotherGreen
-    ]
-    
-    let param = GeometricParams(cellCount: 6, leftInset: 0, rightInset: 0, cellSpacing: 20)
+    @objc private func didTapCreateButton() {
+        limitLabel(isHidden: false)
+    }
 }
 
+// MARK: - CreateHabitViewControllerProotocol
+extension CreateHabitViewController: CreateHabitViewControllerProotocol {
+    func updateSelectedDays(weekdays: Set<Weekday>) {
+        
+        selectedDays = weekdays
+        scheduleView.setSubtitle(selectedDays.shortNamesString)
+    }
+}
+
+// MARK: - UIAdaptivePresentationControllerDelegate
+extension CreateHabitViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        
+        scheduleView.setSubtitle(selectedDays.shortNamesString)
+        print("Смахнул вниз палицем")
+    }
+}
+
+// MARK: - UICollectionViewDataSource
 extension CreateHabitViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         section == 0 ? emoji.count : color.count
@@ -199,10 +282,9 @@ extension CreateHabitViewController: UICollectionViewDataSource {
             return cell
         }
     }
-    
-    
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
 extension CreateHabitViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         param.cellSpacing

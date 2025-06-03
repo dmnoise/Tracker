@@ -25,9 +25,7 @@ final class CreateTrackerViewController: UIViewController {
         obj.setTitleColor(.white, for: .normal)
         obj.setTitleColor(.gray, for: .highlighted)
         obj.layer.cornerRadius = 16
-        
-        
-        
+
         return obj
     }()
     

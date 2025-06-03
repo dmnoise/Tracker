@@ -30,7 +30,7 @@ final class TrackerCell: UICollectionViewCell {
         let obj = UILabel()
         obj.text = "🙂"
         obj.font = UIFont.systemFont(ofSize: 12)
-        obj.backgroundColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.3)
+        obj.backgroundColor = UIColor(ciColor: .white).withAlphaComponent(0.3)
         obj.layer.cornerRadius = 12
         obj.layer.masksToBounds = true
         obj.textAlignment = .center
