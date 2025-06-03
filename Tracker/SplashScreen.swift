@@ -27,7 +27,11 @@ final class SplashScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupUI()
+        setupUI()  
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         delegate?.switchToTabBar()
     }
