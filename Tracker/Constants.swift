@@ -10,8 +10,4 @@ enum Constants {
         case habbit
         case event
     }
-    
-    enum Layout {
-        static let cornerRadius = 16
-    }
 }

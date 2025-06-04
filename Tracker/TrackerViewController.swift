@@ -210,7 +210,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     
     @objc private func createTracker() {
         present(
-            UINavigationController(rootViewController: CreateTrackerViewController(delegate: self)),
+            UINavigationController(rootViewController: SelectTypeTrackerViewController(delegate: self)),
             animated: true
         )
     }

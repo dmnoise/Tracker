@@ -9,10 +9,10 @@ import UIKit
 
 final class ScheduleViewController: UIViewController {
     
-    weak var delegate: CreateHabitViewControllerProtocol?
+    weak var delegate: CreateTrackerViewControllerProtocol?
     
     // MARK: - Init
-    init(delegate: CreateHabitViewControllerProtocol? = nil, selectedDays: Set<Weekday> = []) {
+    init(delegate: CreateTrackerViewControllerProtocol? = nil, selectedDays: Set<Weekday> = []) {
         super.init(nibName: nil, bundle: nil)
         
         self.delegate = delegate
