@@ -9,6 +9,20 @@ import UIKit
 
 final class CreateTrackerViewController: UIViewController {
     
+    weak var delegate: TrackerViewControllerProtocol?
+    
+    // MARK: - Init
+    init(delegate: TrackerViewControllerProtocol? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.delegate = delegate
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - UI
     private let titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Создание трекера"
@@ -40,6 +54,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,6 +63,7 @@ final class CreateTrackerViewController: UIViewController {
         setupConstraint()
     }
     
+    // MARK: - Private methods
     private func setupUI() {
         view.backgroundColor = .white
         navigationItem.titleView = titleLabel
@@ -81,6 +97,9 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc private func didTapHabitButton() {
-        present(UINavigationController(rootViewController: CreateHabitViewController()), animated: true)
+        present(
+            UINavigationController(rootViewController: CreateHabitViewController(delegate: delegate, trackerType: .habbit)),
+            animated: true
+        )
     }
 }

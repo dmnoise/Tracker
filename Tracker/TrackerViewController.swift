@@ -7,7 +7,16 @@
 
 import UIKit
 
-class TrackerViewController: UIViewController {
+protocol TrackerViewControllerProtocol: AnyObject {
+    func didTapCreate(tracker: Tracker, to category: String)
+}
+
+class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
+    func didTapCreate(tracker: Tracker, to category: String) {
+        loadTrackersService.addTracker(tracker, to: category)
+        updateData()
+    }
+    
     
     private let titleLabel: UILabel = {
         let obj = UILabel()
@@ -78,16 +87,17 @@ class TrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadData()
+        updateData()
         setupUI()
         setupNavigationBar()
         setupConstrains()
         setupCollectionView()
         view.addTapGestureToHideKeyboard()
     }
+
     
     // MARK: - Private methods
-    private func loadData() {
+    private func updateData() {
         categories = loadTrackersService.loadData()
         updateVisibleTrackers()
     }
@@ -200,7 +210,7 @@ class TrackerViewController: UIViewController {
     
     @objc private func createTracker() {
         present(
-            UINavigationController(rootViewController: CreateTrackerViewController()),
+            UINavigationController(rootViewController: CreateTrackerViewController(delegate: self)),
             animated: true
         )
     }

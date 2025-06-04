@@ -13,6 +13,21 @@ protocol CreateHabitViewControllerProtocol: AnyObject {
 
 final class CreateHabitViewController: UIViewController {
     
+    weak var delegate: TrackerViewControllerProtocol?
+    var trackerType: Constants.TrackerType = .habbit
+    
+    // MARK: - Init
+    init(delegate: TrackerViewControllerProtocol? = nil, trackerType: Constants.TrackerType) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.trackerType = trackerType
+        self.delegate = delegate
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI
     private let titleLabel: UILabel = {
         let obj = UILabel()
@@ -40,7 +55,7 @@ final class CreateHabitViewController: UIViewController {
     }()
     
     private var limitHeightConstraint: NSLayoutConstraint?
-    private let limitOfSymbols: UILabel = {
+    private let textFieldErrorLabel: UILabel = {
         let obj = UILabel()
         obj.font = UIFont.systemFont(ofSize: 17)
         obj.textColor = .lightRed
@@ -162,7 +177,7 @@ final class CreateHabitViewController: UIViewController {
         view.backgroundColor = .white
         navigationItem.titleView = titleLabel
         
-        view.addSubviews(nameTextField, limitOfSymbols, stackView, collectionView, hStackButtoons)
+        view.addSubviews(nameTextField, textFieldErrorLabel, stackView, collectionView, hStackButtoons)
         
         stackView.addArrangedSubview(categoryView)
         stackView.addArrangedSubview(separatorView)
@@ -184,7 +199,7 @@ final class CreateHabitViewController: UIViewController {
     
     private func setupConstraints() {
         
-        limitHeightConstraint = limitOfSymbols.heightAnchor.constraint(equalToConstant: 0)
+        limitHeightConstraint = textFieldErrorLabel.heightAnchor.constraint(equalToConstant: 0)
         limitHeightConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
@@ -193,10 +208,10 @@ final class CreateHabitViewController: UIViewController {
             nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             
-            limitOfSymbols.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 8),
-            limitOfSymbols.centerXAnchor.constraint(equalTo: nameTextField.centerXAnchor),
+            textFieldErrorLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 8),
+            textFieldErrorLabel.centerXAnchor.constraint(equalTo: nameTextField.centerXAnchor),
    
-            stackView.topAnchor.constraint(equalTo: limitOfSymbols.bottomAnchor, constant: 24),
+            stackView.topAnchor.constraint(equalTo: textFieldErrorLabel.bottomAnchor, constant: 24),
             stackView.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
      
@@ -216,10 +231,13 @@ final class CreateHabitViewController: UIViewController {
         ])
     }
     
-    private func limitLabel(isHidden: Bool) {
+    private func limitLabel(isHidden: Bool, _ text: String? = nil) {
         
         limitHeightConstraint?.constant = isHidden ? 0 : 22
-        limitOfSymbols.isHidden = isHidden
+        textFieldErrorLabel.isHidden = isHidden
+        
+        guard let text else { return }
+        textFieldErrorLabel.text = text
     }
     
     // MARK: - objc
@@ -233,7 +251,23 @@ final class CreateHabitViewController: UIViewController {
     }
     
     @objc private func didTapCreateButton() {
-        limitLabel(isHidden: false)
+        
+        guard let name = nameTextField.text, name.count < 38 else {
+            limitLabel(isHidden: false, "Ограничение 38 символов")
+            return
+        }
+        
+        guard name.count >= 3 else {
+            limitLabel(isHidden: false, "Минимальная длинна 3 символа")
+            return
+        }
+
+        let tracker = Tracker(name: name, color: .cGreen, emoji: "🥂", schedule: selectedDays)
+        
+        limitLabel(isHidden: true)
+        delegate?.didTapCreate(tracker: tracker, to: "Категория №0")
+        
+        self.dismissToRoot(animated: true)
     }
     
     @objc private func didTapCancelButton() {

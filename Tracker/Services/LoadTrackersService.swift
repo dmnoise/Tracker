@@ -11,8 +11,14 @@ final class LoadTrackersService {
     
     private init() { }
     
+    private var categories: [TrackerCategory]?
+    
     func loadData() -> [TrackerCategory] {
 
+        if let categories {
+            return categories
+        }
+        
         var trackers = [[Tracker]]()
         var categories = [TrackerCategory]()
         
@@ -79,6 +85,32 @@ final class LoadTrackersService {
             categories.append(TrackerCategory(title: "Категория №\(key)", trackers: tracker))
         }
         
+        self.categories = categories
+        
         return categories
+    }
+    
+    func addTracker(_ tracker: Tracker, to categoryTitle: String) {
+        guard let categories else { return }
+        
+        var updatedCategories: [TrackerCategory] = []
+        
+        for category in categories {
+            if category.title == categoryTitle {
+                
+                var newTrackers = category.trackers
+                newTrackers.append(tracker)
+                
+                let updatedCategory = TrackerCategory(title: category.title, trackers: newTrackers)
+                updatedCategories.append(updatedCategory)
+                
+            } else {
+                updatedCategories.append(category)
+            }
+        }
+        
+        self.categories = updatedCategories
+        
+        print("nice \(tracker.name)")
     }
 }
