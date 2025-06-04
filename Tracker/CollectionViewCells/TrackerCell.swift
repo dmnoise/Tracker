@@ -57,11 +57,10 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private let addButton: UIButton = {
+    private let completeButton: UIButton = {
         let obj = UIButton()
         obj.layer.cornerRadius = 17
         obj.clipsToBounds = true
-        obj.setImage(UIImage(systemName: "plus"), for: .normal)
         obj.backgroundColor = .cGreen
         obj.tintColor = .white
         
@@ -90,7 +89,7 @@ final class TrackerCell: UICollectionViewCell {
         emojiLabel.text = tracker.emoji
         textLabel.text = tracker.name
         cardView.backgroundColor = tracker.color
-        addButton.backgroundColor = tracker.color
+        completeButton.backgroundColor = tracker.color
        
         isCompleted = isCompletedToday
         
@@ -118,20 +117,20 @@ final class TrackerCell: UICollectionViewCell {
     private func setupUI() {
         contentView.layer.masksToBounds = true
         contentView.backgroundColor = .clear
-        contentView.addSubviews(cardView, counterDaysLabel, addButton)
+        contentView.addSubviews(cardView, counterDaysLabel, completeButton)
         
         cardView.addSubviews(emojiLabel, textLabel)
         
-        addButton.addTarget(self, action: #selector(didTapCompledetButton), for: .touchUpInside)
+        completeButton.addTarget(self, action: #selector(didTapCompledetButton), for: .touchUpInside)
     }
     
     private func updateCompletedButtonStatus() {
         
-        let imageName = isCompleted ? "checkmark" : "plus"
+        let image: ImageResource = isCompleted ? .done : .plus
         let opacity: Float = isCompleted ? 0.3 : 1.0
         
-        addButton.setImage(UIImage(systemName: imageName), for: .normal)
-        addButton.layer.opacity = opacity
+        completeButton.setImage(UIImage(resource: image), for: .normal)
+        completeButton.layer.opacity = opacity
     }
     
     private func dayWord(for number: Int) -> String {
@@ -168,13 +167,13 @@ final class TrackerCell: UICollectionViewCell {
             textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
             textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -12),
             
-            addButton.topAnchor.constraint(equalTo: cardView.bottomAnchor, constant: 8),
-            addButton.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
-            addButton.widthAnchor.constraint(equalToConstant: 34),
-            addButton.heightAnchor.constraint(equalToConstant: 34),
+            completeButton.topAnchor.constraint(equalTo: cardView.bottomAnchor, constant: 8),
+            completeButton.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+            completeButton.widthAnchor.constraint(equalToConstant: 34),
+            completeButton.heightAnchor.constraint(equalToConstant: 34),
             
             counterDaysLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
-            counterDaysLabel.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: -8),
+            counterDaysLabel.trailingAnchor.constraint(equalTo: completeButton.leadingAnchor, constant: -8),
             counterDaysLabel.topAnchor.constraint(equalTo: cardView.bottomAnchor, constant: 16 )
         ])
     }

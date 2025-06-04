@@ -59,7 +59,7 @@ final class SelectTypeTrackerViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        setupActrions()
+        setupTargets()
         setupConstraint()
     }
     
@@ -69,7 +69,7 @@ final class SelectTypeTrackerViewController: UIViewController {
         navigationItem.titleView = titleLabel
     }
     
-    private func setupActrions() {
+    private func setupTargets() {
         habitButton.addTarget(self, action: #selector(didTapHabitButton), for: .touchUpInside)
         eventButton.addTarget(self, action: #selector(didTapEventButton), for: .touchUpInside)
     }

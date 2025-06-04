@@ -10,10 +10,16 @@ import UIKit
 final class HabitOptionView: UIControl {
     
     // MARK: - Subviews
-    private let titleLabel = UILabel()
+    private let titleLabel: UILabel = {
+        let obj = UILabel()
+        obj.textColor = .yaBlack
+        
+        return obj
+    }()
+    
     private let subtitleLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .gray
+        obj.textColor = .yaDarkGray
         
         return obj
     }()
@@ -21,7 +27,7 @@ final class HabitOptionView: UIControl {
     private let chevronImageView: UIImageView = {
         let obj = UIImageView()
         obj.image = UIImage(systemName: "chevron.right")
-        obj.tintColor = .systemGray3
+        obj.tintColor = .yaDarkGray
         
         return obj
     }()

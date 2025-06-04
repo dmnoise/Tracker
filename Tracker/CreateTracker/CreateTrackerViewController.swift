@@ -42,6 +42,7 @@ final class CreateTrackerViewController: UIViewController {
         let obj = UITextField()
         obj.placeholder = "Введите название трекера"
         obj.font = UIFont.systemFont(ofSize: 17)
+        obj.textColor = .yaBlack
         obj.backgroundColor = .fieldBackground
         obj.layer.cornerRadius = 16
         
@@ -159,7 +160,7 @@ final class CreateTrackerViewController: UIViewController {
         setupCollectionView()
         addTratgets()
         
-        categoryView.setSubtitle("Название категории")
+        categoryView.setSubtitle("Категория №0")
         scheduleView.setSubtitle(selectedDays.shortNamesString)
         
         view.addTapGestureToHideKeyboard()
@@ -175,6 +176,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .white
+        titleLabel.text = trackerType != .event ? "Новая привычка" : "Новое нерегулярное событие"
         navigationItem.titleView = titleLabel
         
         view.addSubviews(nameTextField, textFieldErrorLabel, stackView, collectionView, hStackButtoons)

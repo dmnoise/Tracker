@@ -140,7 +140,8 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     
     private func setupNavigationBar() {
         let leftButton = UIBarButtonItem(
-            barButtonSystemItem: .add,
+            image: UIImage(resource: .icAddTracker),
+            style: .plain,
             target: self,
             action: #selector(createTracker)
         )
@@ -192,8 +193,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
         
         guard let categories else { return }
         
-        let currentWeekday = Calendar.current.weekday(from: selectedDate)
-        visibleCategories = categories.filteredByWeekday(currentWeekday)
+        visibleCategories = categories.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
         
         updatePlaceholderState()
         collectionView.reloadData()

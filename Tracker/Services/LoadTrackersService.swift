@@ -110,7 +110,5 @@ final class LoadTrackersService {
         }
         
         self.categories = updatedCategories
-        
-        print("nice \(tracker.name)")
     }
 }
