@@ -23,7 +23,7 @@ final class SelectTypeTrackerViewController: UIViewController {
     }
     
     // MARK: - UI
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Создание трекера"
         obj.textColor = .yaBlack
@@ -32,7 +32,7 @@ final class SelectTypeTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let habitButton: UIButton = {
+    private lazy var habitButton: UIButton = {
         let obj = UIButton()
         obj.setTitle("Привычка", for: .normal)
         obj.backgroundColor = .yaBlack
@@ -43,7 +43,7 @@ final class SelectTypeTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let eventButton: UIButton = {
+    private lazy var eventButton: UIButton = {
         let obj = UIButton()
         obj.setTitle("Нерегулярное событие", for: .normal)
         obj.backgroundColor = .yaBlack

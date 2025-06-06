@@ -16,7 +16,7 @@ final class SplashScreen: UIViewController {
     weak var delegate: SplashScreenDelegate?
     
     // MARK: - Private properties
-    private let logo: UIImageView = {
+    private lazy var logo: UIImageView = {
         let image = UIImage(resource: .logo)
         let obj = UIImageView(image: image)
         obj.contentMode = .scaleAspectFit

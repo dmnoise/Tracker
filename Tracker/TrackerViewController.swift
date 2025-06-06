@@ -18,7 +18,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     }
     
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Трекер"
         obj.textColor = .black
@@ -27,7 +27,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
         return obj
     }()
     
-    private let searchView: UISearchBar = {
+    private lazy var searchView: UISearchBar = {
         let obj = UISearchBar()
         obj.placeholder = "Поиск"
         obj.searchBarStyle = .minimal
@@ -35,7 +35,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
         return obj
     }()
     
-    private let label: UILabel = {
+    private lazy var label: UILabel = {
         let obj = UILabel()
         obj.text = "Что будем отслеживать?"
         obj.font = .systemFont(ofSize: 12)
@@ -46,14 +46,14 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
         return obj
     }()
     
-    private let imageView: UIImageView = {
+    private lazy var imageView: UIImageView = {
         let image = UIImage(resource: .superStar)
         let obj = UIImageView(image: image)
         
         return obj
     }()
     
-    private let placeholderView: UIStackView = {
+    private lazy var placeholderView: UIStackView = {
         let obj = UIStackView()
         obj.axis = .vertical
         obj.alignment = .center
@@ -63,7 +63,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
         return obj
     }()
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let obj = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()

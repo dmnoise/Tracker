@@ -9,7 +9,7 @@ import UIKit
 
 final class StatsViewController: UIViewController {
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Статистика"
         obj.textColor = .yaBlack
@@ -18,7 +18,7 @@ final class StatsViewController: UIViewController {
         return obj
     }()
     
-    private let label: UILabel = {
+    private lazy var label: UILabel = {
         let obj = UILabel()
         obj.text = "Анализировать пока нечего"
         obj.textColor = .yaBlack
@@ -27,7 +27,7 @@ final class StatsViewController: UIViewController {
         return obj
     }()
     
-    private let imageView: UIImageView = {
+    private lazy var imageView: UIImageView = {
         let image = UIImage(resource: .cryingMan)
         let obj = UIImageView(image: image)
         

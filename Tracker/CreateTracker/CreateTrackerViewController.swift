@@ -29,7 +29,7 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     // MARK: - UI
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Новая привычка"
         obj.textColor = .yaBlack
@@ -38,7 +38,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let nameTextField: UITextField = {
+    private lazy var nameTextField: UITextField = {
         let obj = UITextField()
         obj.placeholder = "Введите название трекера"
         obj.font = UIFont.systemFont(ofSize: 17)
@@ -56,7 +56,7 @@ final class CreateTrackerViewController: UIViewController {
     }()
     
     private var limitHeightConstraint: NSLayoutConstraint?
-    private let textFieldErrorLabel: UILabel = {
+    private lazy var textFieldErrorLabel: UILabel = {
         let obj = UILabel()
         obj.font = UIFont.systemFont(ofSize: 17)
         obj.textColor = .lightRed
@@ -66,7 +66,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
         let obj = UIStackView()
         obj.axis = .vertical
         obj.backgroundColor = .fieldBackground
@@ -81,7 +81,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let separatorView: UIView = {
+    private lazy var separatorView: UIView = {
         let obj = UIView()
         obj.backgroundColor = .yaDarkGray
         obj.setContentHuggingPriority(.defaultHigh, for: .vertical)
@@ -89,7 +89,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let obj = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         obj.backgroundColor = .clear
         
@@ -98,7 +98,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         let obj = UIButton()
         obj.setTitle("Отменить", for: .normal)
         obj.setTitleColor(.lightRed, for: .normal)
@@ -111,7 +111,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let createButton: UIButton = {
+    private lazy var createButton: UIButton = {
         let obj = UIButton()
         obj.setTitle("Создать", for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
@@ -123,7 +123,7 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
-    private let hStackButtoons: UIStackView = {
+    private lazy var hStackButtoons: UIStackView = {
         let obj = UIStackView()
         obj.axis = .horizontal
         obj.distribution = .fillProportionally
