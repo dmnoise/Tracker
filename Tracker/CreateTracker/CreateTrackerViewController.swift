@@ -93,8 +93,6 @@ final class CreateTrackerViewController: UIViewController {
         let obj = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         obj.backgroundColor = .clear
         
-        obj.isHidden = true // TODO: Что-то меня понесло, тут это пока скроем
-        
         return obj
     }()
     
@@ -228,7 +226,7 @@ final class CreateTrackerViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 32),
             collectionView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: hStackButtoons.topAnchor, constant: -16),
             
             hStackButtoons.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             hStackButtoons.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),

@@ -45,5 +45,7 @@ final class TabBarController: UITabBarController {
         tabBar.layer.shadowOpacity = 1
         tabBar.layer.shadowRadius = 0
         tabBar.layer.masksToBounds = false
+        tabBar.layer.shadowPath = UIBezierPath(roundedRect: tabBar.bounds, cornerRadius: tabBar.layer.cornerRadius).cgPath
+
     }
 }
