@@ -10,7 +10,7 @@ import UIKit
 final class EmojiCell: UICollectionViewCell {
     static let identifier = "EmojiCell"
     
-    private var textLabel: UILabel = {
+    private lazy var textLabel: UILabel = {
         let obj = UILabel()
         obj.font = UIFont.systemFont(ofSize: 32)
         obj.text = "A"

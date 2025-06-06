@@ -18,7 +18,7 @@ final class TrackerCell: UICollectionViewCell {
     static let identifier = "TrackerCell"
     
     //MARK: - UI
-    private let cardView: UIView = {
+    private lazy var cardView: UIView = {
         let obj = UIView()
         obj.backgroundColor = .cGreen
         obj.layer.cornerRadius = 16
@@ -26,7 +26,7 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private let emojiLabel: UILabel = {
+    private lazy var emojiLabel: UILabel = {
         let obj = UILabel()
         obj.text = "🙂"
         obj.font = UIFont.systemFont(ofSize: 12)
@@ -38,7 +38,7 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private let textLabel: UILabel = {
+    private lazy var textLabel: UILabel = {
         let obj = UILabel()
         obj.font = UIFont.systemFont(ofSize: 12)
         obj.textColor = .white
@@ -48,7 +48,7 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private let counterDaysLabel: UILabel = {
+    private lazy var counterDaysLabel: UILabel = {
         let obj = UILabel()
         obj.textColor = .black
         obj.font = UIFont.systemFont(ofSize: 12)
@@ -57,7 +57,7 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private let completeButton: UIButton = {
+    private lazy var completeButton: UIButton = {
         let obj = UIButton()
         obj.layer.cornerRadius = 17
         obj.clipsToBounds = true
@@ -92,14 +92,11 @@ final class TrackerCell: UICollectionViewCell {
         completeButton.backgroundColor = tracker.color
        
         isCompleted = isCompletedToday
-        
         self.countDays = countDays
-        
         updateCompletedButtonStatus()
     }
     
     func changeCompletedButtonStatus() {
-        
         isCompleted.toggle()
         countDays += isCompleted ? 1 : -1
         
@@ -108,7 +105,6 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - objc
     @objc private func didTapCompledetButton() {
-      
         delegate?.didTapCompletedButton(self, isCompleted: !isCompleted)
     }
     
@@ -120,12 +116,10 @@ final class TrackerCell: UICollectionViewCell {
         contentView.addSubviews(cardView, counterDaysLabel, completeButton)
         
         cardView.addSubviews(emojiLabel, textLabel)
-        
         completeButton.addTarget(self, action: #selector(didTapCompledetButton), for: .touchUpInside)
     }
     
     private func updateCompletedButtonStatus() {
-        
         let image: ImageResource = isCompleted ? .done : .plus
         let opacity: Float = isCompleted ? 0.3 : 1.0
         
