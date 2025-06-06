@@ -27,7 +27,7 @@ final class ScheduleViewController: UIViewController {
     private var selectedDays: Set<Weekday> = []
     private var weekdays = Weekday.allCases
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Расписание"
         obj.textColor = .yaBlack
@@ -36,7 +36,7 @@ final class ScheduleViewController: UIViewController {
         return obj
     }()
     
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let obj = UITableView()
         obj.backgroundColor = .fieldBackground
         obj.allowsSelection = false
@@ -49,7 +49,7 @@ final class ScheduleViewController: UIViewController {
         return obj
     }()
     
-    private var saveButton: UIButton = {
+    private lazy var saveButton: UIButton = {
         let obj = UIButton()
         obj.backgroundColor = .yaBlack
         obj.tintColor = .yaWhite
@@ -76,15 +76,12 @@ final class ScheduleViewController: UIViewController {
     }
     
     private func setupTableView() {
-        
         tableView.dataSource = self
-        
-        view.addSubviews(saveButton, tableView)
-        
         tableView.rowHeight = 75
-        
+        tableView.register(WeekdaySwitchCell.self, forCellReuseIdentifier: WeekdaySwitchCell.identifier)
+        view.addSubviews(saveButton, tableView)
+    
         NSLayoutConstraint.activate([
-            
             saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -95,8 +92,6 @@ final class ScheduleViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
-        
-        tableView.register(WeekdaySwitchCell.self, forCellReuseIdentifier: WeekdaySwitchCell.identifier)
     }
     
     // MARK: - objc

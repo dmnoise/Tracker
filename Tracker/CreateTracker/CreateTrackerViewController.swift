@@ -60,7 +60,7 @@ final class CreateTrackerViewController: UIViewController {
         let obj = UILabel()
         obj.font = UIFont.systemFont(ofSize: 17)
         obj.textColor = .lightRed
-        obj.text = "Ограничение 38 символов"
+        obj.text = "Ограничение \(Constants.maxNameLength) символов"
         obj.isHidden = true
         
         return obj
@@ -258,9 +258,9 @@ final class CreateTrackerViewController: UIViewController {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let length = trimmed.count
         
-        limitLabel(isHidden: length < 38)
+        limitLabel(isHidden: length < Constants.maxNameLength)
     
-        let isTextValid = (1...37).contains(length)
+        let isTextValid = (1...Constants.maxNameLength).contains(length)
         let isDaysSelected = !selectedDays.isEmpty || trackerType == .event
         
         changeCreateButton(isEnabled: isTextValid && isDaysSelected)

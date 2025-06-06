@@ -7,14 +7,14 @@
 
 import UIKit
 
-class WeekdaySwitchCell: UITableViewCell {
+final class WeekdaySwitchCell: UITableViewCell {
     
     static let identifier = "WeekdaySwitchCell"
     
     private var currentWeekday: Weekday?
     var onToggle: ((Weekday, Bool) -> Void)?
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.textColor = .yaBlack
         obj.font = UIFont.systemFont(ofSize: 17)
@@ -22,7 +22,7 @@ class WeekdaySwitchCell: UITableViewCell {
         return obj
     }()
     
-    private let toggleSwitch: UISwitch = {
+    private lazy var toggleSwitch: UISwitch = {
         let obj = UISwitch()
         obj.onTintColor = .cBlue
         
@@ -32,7 +32,6 @@ class WeekdaySwitchCell: UITableViewCell {
     // MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setupСell()
     }
 
@@ -49,11 +48,10 @@ class WeekdaySwitchCell: UITableViewCell {
     
     // MARK: - Private methods
     private func setupСell() {
-        
         backgroundColor = .clear
         contentView.backgroundColor = .clear
-        
         contentView.addSubviews(titleLabel, toggleSwitch)
+        toggleSwitch.addTarget(self, action: #selector(weekdaySelected(_:)), for: .valueChanged)
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -62,8 +60,6 @@ class WeekdaySwitchCell: UITableViewCell {
             toggleSwitch.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             toggleSwitch.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ])
-        
-        toggleSwitch.addTarget(self, action: #selector(weekdaySelected(_:)), for: .valueChanged)
     }
     
     // MARK: - objc
