@@ -6,6 +6,9 @@
 //
 
 enum Constants {
+    
+    static let maxNameLength = 38
+    
     enum TrackerType {
         case habbit
         case event

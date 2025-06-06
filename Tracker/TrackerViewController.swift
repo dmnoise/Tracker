@@ -150,7 +150,6 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
             let obj = UIDatePicker()
             obj.datePickerMode = .date
             obj.preferredDatePickerStyle = .compact
-            obj.locale = Locale(identifier: "ru_RU")
             obj.addTarget(self, action: #selector(datePickerValueChanget(_:)), for: .valueChanged)
             
             return UIBarButtonItem(customView: obj)
