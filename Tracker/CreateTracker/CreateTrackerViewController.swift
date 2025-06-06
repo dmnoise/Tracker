@@ -118,6 +118,7 @@ final class CreateTrackerViewController: UIViewController {
         obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         obj.backgroundColor = .yaDarkGray
         obj.layer.cornerRadius = 16
+        obj.isEnabled = false
         
         return obj
     }()
@@ -162,6 +163,8 @@ final class CreateTrackerViewController: UIViewController {
         
         categoryView.setSubtitle("Категория №0")
         scheduleView.setSubtitle(selectedDays.shortNamesString)
+        
+        nameTextField.delegate = self
         
         view.addTapGestureToHideKeyboard()
     }
@@ -236,13 +239,31 @@ final class CreateTrackerViewController: UIViewController {
         ])
     }
     
-    private func limitLabel(isHidden: Bool, _ text: String? = nil) {
-        
+    private func limitLabel(isHidden: Bool) {
         limitHeightConstraint?.constant = isHidden ? 0 : 22
         textFieldErrorLabel.isHidden = isHidden
+    }
+    
+    private func changeCreateButton(isEnabled: Bool) {
+        createButton.isEnabled = isEnabled
+        createButton.backgroundColor = isEnabled ? .yaBlack : .yaDarkGray
+    }
+    
+    private func validateForm() {
+        guard let text = nameTextField.text else {
+            changeCreateButton(isEnabled: false)
+            return
+        }
         
-        guard let text else { return }
-        textFieldErrorLabel.text = text
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let length = trimmed.count
+        
+        limitLabel(isHidden: length < 38)
+    
+        let isTextValid = (1...37).contains(length)
+        let isDaysSelected = !selectedDays.isEmpty || trackerType == .event
+        
+        changeCreateButton(isEnabled: isTextValid && isDaysSelected)
     }
     
     // MARK: - objc
@@ -258,12 +279,7 @@ final class CreateTrackerViewController: UIViewController {
     @objc private func didTapCreateButton() {
         
         guard let name = nameTextField.text, name.count < 38 else {
-            limitLabel(isHidden: false, "Ограничение 38 символов")
-            return
-        }
-        
-        guard name.count >= 3 else {
-            limitLabel(isHidden: false, "Минимальная длинна 3 символа")
+            limitLabel(isHidden: false)
             return
         }
 
@@ -280,12 +296,20 @@ final class CreateTrackerViewController: UIViewController {
     }
 }
 
+// MARK: - UITextFieldDelegate
+extension CreateTrackerViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        validateForm()
+    }
+}
+
 // MARK: - CreateHabitViewControllerProotocol
 extension CreateTrackerViewController: CreateTrackerViewControllerProtocol {
     func updateSelectedDays(weekdays: Set<Weekday>) {
         
         selectedDays = weekdays
         scheduleView.setSubtitle(selectedDays.shortNamesString)
+        validateForm()
     }
 }
 
