@@ -38,7 +38,7 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     private let label: UILabel = {
         let obj = UILabel()
         obj.text = "Что будем отслеживать?"
-        obj.font = .systemFont(ofSize: 18)
+        obj.font = .systemFont(ofSize: 12)
         obj.sizeToFit()
         obj.textAlignment = .center
         obj.setContentHuggingPriority(.defaultLow, for: .horizontal)

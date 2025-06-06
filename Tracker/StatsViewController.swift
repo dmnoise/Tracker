@@ -22,7 +22,7 @@ final class StatsViewController: UIViewController {
         let obj = UILabel()
         obj.text = "Анализировать пока нечего"
         obj.textColor = .yaBlack
-        obj.font = .systemFont(ofSize: 18)
+        obj.font = .systemFont(ofSize: 12)
         
         return obj
     }()
