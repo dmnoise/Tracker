@@ -8,21 +8,21 @@
 import UIKit
 
 extension UIView {
-
     func addTapGestureToHideKeyboard() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        addGestureRecognizer(tapGesture)
+        tapGesture.cancelsTouchesInView = false
+        findTopSuperview()?.addGestureRecognizer(tapGesture)
     }
-
-    private var topSuperview: UIView? {
-        var view = superview
-        while view?.superview != nil {
-            view = view!.superview
+    
+    private func findTopSuperview() -> UIView? {
+        var view: UIView? = self
+        while let superview = view?.superview {
+            view = superview
         }
         return view
     }
-
+    
     @objc private func dismissKeyboard() {
-        topSuperview?.endEditing(true)
+        self.window?.endEditing(true)
     }
 }
