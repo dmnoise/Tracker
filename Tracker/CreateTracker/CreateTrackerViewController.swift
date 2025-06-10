@@ -38,6 +38,21 @@ final class CreateTrackerViewController: UIViewController {
         return obj
     }()
     
+    private lazy var scrollView: UIScrollView = {
+        let obj = UIScrollView()
+        obj.backgroundColor = .clear
+        obj.showsVerticalScrollIndicator = false
+        
+        return obj
+    }()
+    
+    private lazy var contentView: UIView = {
+        let obj = UIView()
+        obj.backgroundColor = .clear
+        
+        return obj
+    }()
+    
     private lazy var nameTextField: UITextField = {
         let obj = UITextField()
         obj.font = UIFont.systemFont(ofSize: 17)
@@ -189,7 +204,9 @@ final class CreateTrackerViewController: UIViewController {
         titleLabel.text = trackerType != .event ? "Новая привычка" : "Новое нерегулярное событие"
         navigationItem.titleView = titleLabel
         
-        view.addSubviews(nameTextField, textFieldErrorLabel, stackView, collectionView, hStackButtoons)
+        view.addSubviews(scrollView, hStackButtoons)
+        scrollView.addSubviews(contentView)
+        contentView.addSubviews(nameTextField, textFieldErrorLabel, stackView, collectionView)
         
         stackView.addArrangedSubview(categoryView)
         
@@ -221,9 +238,20 @@ final class CreateTrackerViewController: UIViewController {
         limitHeightConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
-            nameTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: hStackButtoons.topAnchor, constant: -16),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            nameTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            nameTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            nameTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             
             textFieldErrorLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 8),
@@ -235,13 +263,14 @@ final class CreateTrackerViewController: UIViewController {
      
             separatorView.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale),
             
-            collectionView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 32),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: hStackButtoons.topAnchor, constant: -16),
+            collectionView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            collectionView.heightAnchor.constraint(equalToConstant: 500),
             
-            hStackButtoons.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
-            hStackButtoons.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
+            hStackButtoons.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            hStackButtoons.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             hStackButtoons.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             createButton.heightAnchor.constraint(equalToConstant: 60),
@@ -382,7 +411,7 @@ extension CreateTrackerViewController: UICollectionViewDataSource {
 extension CreateTrackerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-        return CGSize(width: collectionView.frame.width, height: 44)
+        return CGSize(width: collectionView.frame.width, height: 32)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
