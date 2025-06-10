@@ -86,7 +86,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Public Methods
     func configure(tracker: Tracker, isCompletedToday: Bool, countDays: Int) {
         trackerID = tracker.id
-        emojiLabel.text = tracker.emoji
+        emojiLabel.text = String(tracker.emoji)
         textLabel.text = tracker.name
         cardView.backgroundColor = tracker.color
         completeButton.backgroundColor = tracker.color

@@ -11,10 +11,10 @@ struct Tracker {
     let id: UUID
     let name: String
     let color: UIColor
-    let emoji: String
+    let emoji: Character
     let schedule: Set<Weekday>
     
-    init(name: String, color: UIColor, emoji: String, schedule: Set<Weekday>) {
+    init(name: String, color: UIColor, emoji: Character, schedule: Set<Weekday>) {
         self.id = UUID()
         self.name = name
         self.color = color
