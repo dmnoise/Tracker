@@ -83,6 +83,10 @@ final class TrackerCell: UICollectionViewCell {
         setupConstraint()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Public Methods
     func configure(tracker: Tracker, isCompletedToday: Bool, countDays: Int) {
         trackerID = tracker.id
@@ -170,9 +174,5 @@ final class TrackerCell: UICollectionViewCell {
             counterDaysLabel.trailingAnchor.constraint(equalTo: completeButton.leadingAnchor, constant: -8),
             counterDaysLabel.topAnchor.constraint(equalTo: cardView.bottomAnchor, constant: 16 )
         ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
