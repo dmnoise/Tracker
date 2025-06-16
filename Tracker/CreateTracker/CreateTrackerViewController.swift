@@ -114,6 +114,7 @@ final class CreateTrackerViewController: UIViewController {
         
         let obj = UICollectionView(frame: .zero, collectionViewLayout: layout)
         obj.backgroundColor = .clear
+        obj.isScrollEnabled = false
         
         return obj
     }()
@@ -164,14 +165,17 @@ final class CreateTrackerViewController: UIViewController {
         .cBeige, .cAnotherBlue, .cLilac, .cLightLilac, .cAnotherLilac, .cAnotherGreen
     ]
     
+    private var selectedCategory: IndexPath?
     private var selectedDays: Set<Weekday> = []
     private var selectedColor: UIColor?
     private var selectedEmoji: Character?
+    private lazy var categories = LoadTrackersService.shared.loadData()
     
     private let categoryView = HabitOptionView(title: "Категория")
     private let scheduleView = HabitOptionView(title: "Расписание")
     
     private let paramCV = GeometricParams(cellCount: 6, leftInset: 16, rightInset: 16, cellSpacing: 5)
+    private var collectionViewHeightConstraint: NSLayoutConstraint!
 
     
     // MARK: - Lifecycle
@@ -183,17 +187,20 @@ final class CreateTrackerViewController: UIViewController {
         setupCollectionView()
         addTratgets()
         
-        categoryView.setSubtitle("Категория №0")
-        scheduleView.setSubtitle(selectedDays.shortNamesString)
-        
         nameTextField.delegate = self
         
         view.addTapGestureToHideKeyboard()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateCollectionViewHeight()
+    }
+    
     // MARK: - Private methods
     private func addTratgets() {
         scheduleView.addTarget(self, action: #selector(didTapScheduleButton), for: .touchUpInside)
+        categoryView.addTarget(self, action: #selector(didTapCategoryButton), for: .touchUpInside)
         
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
@@ -226,9 +233,7 @@ final class CreateTrackerViewController: UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        
         collectionView.allowsMultipleSelection = true
-        
         collectionView.reloadData()
     }
     
@@ -236,6 +241,10 @@ final class CreateTrackerViewController: UIViewController {
         
         limitHeightConstraint = textFieldErrorLabel.heightAnchor.constraint(equalToConstant: 0)
         limitHeightConstraint?.isActive = true
+        
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 500)
+        collectionViewHeightConstraint.priority = .defaultHigh
+        collectionViewHeightConstraint.isActive = true
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -267,7 +276,6 @@ final class CreateTrackerViewController: UIViewController {
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            collectionView.heightAnchor.constraint(equalToConstant: 500),
             
             hStackButtoons.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             hStackButtoons.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -276,6 +284,24 @@ final class CreateTrackerViewController: UIViewController {
             createButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func updateCollectionViewHeight() {
+        let headerHeight: CGFloat = 32
+        let sectionSpacing: CGFloat = 24
+        
+        let emojiRows = ceil(CGFloat(emoji.count) / 6.0)
+        let colorRows = ceil(CGFloat(color.count) / 6.0)
+        
+        let cellWidth = (collectionView.bounds.width - 32) / 6.0
+        
+        let totalHeight =
+            headerHeight + (emojiRows * cellWidth) +
+            headerHeight + (colorRows * cellWidth) +
+            sectionSpacing
+        
+        collectionViewHeightConstraint.constant = totalHeight
+        view.layoutIfNeeded()
     }
     
     private func limitLabel(isHidden: Bool) {
@@ -302,13 +328,19 @@ final class CreateTrackerViewController: UIViewController {
         let isTextValid = (1...Constants.maxNameLength).contains(length)
         let isDaysSelected = !selectedDays.isEmpty || trackerType == .event
         let isSelectedEmojiAndColor = selectedEmoji != nil && selectedColor != nil
+        let isSelectedCategory = selectedCategory != nil
         
-        changeCreateButton(isEnabled: isTextValid && isDaysSelected && isSelectedEmojiAndColor)
+        changeCreateButton(isEnabled: isTextValid && isDaysSelected && isSelectedEmojiAndColor && isSelectedCategory)
     }
     
     // MARK: - objc
+    @objc private func didTapCategoryButton() {
+        present(UINavigationController(
+                rootViewController:CategoryCatalogViewController(delegate: self, selectedIndexPath: selectedCategory)
+        ), animated: true)
+    }
+    
     @objc private func didTapScheduleButton() {
-        
         let vc = UINavigationController(
             rootViewController: ScheduleViewController(delegate: self, selectedDays: selectedDays)
         )
@@ -317,18 +349,18 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc private func didTapCreateButton() {
-        
         guard let name = nameTextField.text, name.count < Constants.maxNameLength else {
             limitLabel(isHidden: false)
             return
         }
 
-        guard let selectedEmoji, let selectedColor else { return }
+        guard let selectedEmoji, let selectedColor, let selectedCategory else { return }
         
         let tracker = Tracker(name: name, color: selectedColor, emoji: selectedEmoji, schedule: selectedDays)
+        let categoryName = categories[selectedCategory.row].title
         
         limitLabel(isHidden: true)
-        delegate?.didTapCreate(tracker: tracker, to: "Категория №0")
+        delegate?.didTapCreate(tracker: tracker, to: categoryName)
         
         self.dismissToRoot(animated: true)
     }
@@ -338,10 +370,25 @@ final class CreateTrackerViewController: UIViewController {
     }
 }
 
+// MARK: - CategoryCatalogViewControllerProtocol
+extension CreateTrackerViewController: CategoryCatalogViewControllerProtocol {
+    func setSelectedCategory(indexPath: IndexPath) {
+        let categories = LoadTrackersService.shared.loadData()        
+        categoryView.setSubtitle(categories[indexPath.row].title)
+        selectedCategory = indexPath
+        
+        validateForm()
+    }
+}
+
 // MARK: - UITextFieldDelegate
 extension CreateTrackerViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         validateForm()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
     }
 }
 
@@ -451,9 +498,7 @@ extension CreateTrackerViewController: UICollectionViewDelegate {
         
         switch cell {
         case let emojiCell as EmojiCell:
-            emojiCell.contentView.backgroundColor = .yaLightGray
-            emojiCell.contentView.layer.cornerRadius = 16
-            emojiCell.contentView.layer.masksToBounds = false
+            emojiCell.isSelected(true)
             selectedEmoji = emoji[indexPath.row]
         
         case let colorCell as ColorCell:
@@ -474,7 +519,7 @@ extension CreateTrackerViewController: UICollectionViewDelegate {
         
         switch cell {
         case let emojiCell as EmojiCell:
-            emojiCell.contentView.backgroundColor = .clear
+            emojiCell.isSelected(false)
             selectedEmoji = nil
             
         case let colorCell as ColorCell:
