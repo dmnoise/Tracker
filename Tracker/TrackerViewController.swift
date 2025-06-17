@@ -11,13 +11,7 @@ protocol TrackerViewControllerProtocol: AnyObject {
     func didTapCreate(tracker: Tracker, to category: String)
 }
 
-class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
-    func didTapCreate(tracker: Tracker, to category: String) {
-        loadTrackersService.addTracker(tracker, to: category)
-        updateData()
-    }
-    
-    
+class TrackerViewController: UIViewController {    
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Трекер"
@@ -108,7 +102,6 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     }
     
     private func setupConstrains() {
-        
         view.addSubviews(titleLabel, searchView, collectionView, placeholderView)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -177,12 +170,10 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     }
     
     private func countOfCompleted(for trackerID: UUID) -> Int {
-        
         completedTrackers.filter { $0.trackerID == trackerID }.count
     }
     
     private func isCompleted(for trackerID: UUID, on date: Date) -> Bool {
-        
         return completedTrackers.contains {
             $0.trackerID == trackerID &&
             Calendar.current.isDate($0.date, inSameDayAs: date)
@@ -190,7 +181,6 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     }
     
     private func updateVisibleTrackers() {
-        
         guard let categories else { return }
         
         visibleCategories = categories.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
@@ -201,7 +191,6 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
     
     // MARK: - objc
     @objc private func datePickerValueChanget(_ sender: UIDatePicker) {
-        
         let selectedDate = sender.date
         self.selectedDate = selectedDate
         
@@ -213,6 +202,14 @@ class TrackerViewController: UIViewController, TrackerViewControllerProtocol {
             UINavigationController(rootViewController: SelectTypeTrackerViewController(delegate: self)),
             animated: true
         )
+    }
+}
+
+// MARK: - TrackerViewControllerProtocol
+extension TrackerViewController: TrackerViewControllerProtocol {
+    func didTapCreate(tracker: Tracker, to category: String) {
+        loadTrackersService.addTracker(tracker, to: category)
+        updateData()
     }
 }
 
@@ -240,7 +237,6 @@ extension TrackerViewController: TrackerCellDelegate {
 // MARK: - UICollectionViewDataSource
 extension TrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        
         visibleCategories?.count ?? 0
     }
     
@@ -263,7 +259,6 @@ extension TrackerViewController: UICollectionViewDataSource {
             isCompletedToday: isCompleted(for: tracker.id, on: selectedDate),
             countDays: countOfCompleted(for: tracker.id)
         )
-        
         return cell
     }
     
@@ -291,7 +286,6 @@ extension TrackerViewController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
         return CGSize(width: collectionView.frame.width, height: 44)
