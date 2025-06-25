@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CategoryCatalogViewControllerProtocol: AnyObject {
-    func setSelectedCategory(indexPath: IndexPath)
+    func setSelectedCategory(indexPath: IndexPath?)
 }
 
 final class CategoryCatalogViewController: UIViewController {
@@ -78,7 +78,8 @@ final class CategoryCatalogViewController: UIViewController {
         return obj
     }()
     
-    private let categories = LoadTrackersService.shared.loadData()
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private var categories: [TrackerCategory] = []
     private var selectedIndexPath: IndexPath?
     
     // MARK: - Init
@@ -97,6 +98,8 @@ final class CategoryCatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        categories = trackerCategoryStore.categories
+        
         setupUI()
         
         tableView.delegate = self
@@ -107,6 +110,13 @@ final class CategoryCatalogViewController: UIViewController {
     }
     
     // MARK: - Private methods
+    private func updateCategoryList() {
+        categories = trackerCategoryStore.categories
+        placeholderView.isHidden = !categories.isEmpty
+        
+        tableView.reloadData()
+    }
+    
     private func setupUI() {
         view.addSubviews(placeholderView, createButton, tableView)
         view.backgroundColor = .white
@@ -118,7 +128,7 @@ final class CategoryCatalogViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60), // минус высота кнопки, чтобы было прям центр
+            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60),
             
             createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -135,18 +145,34 @@ final class CategoryCatalogViewController: UIViewController {
     // MARK: - objc
     @objc private func didTapCreateCategoryButton() {
         let vc = UINavigationController(
-            rootViewController: CategoryCreateViewController()
+            rootViewController: CategoryCreateViewController(delegate: self)
         )
         
         present(vc, animated: true)
     }
 }
 
+extension CategoryCatalogViewController: CategoryCreateViewControllerProtocol {
+    func didTapCreateCategory(_ title: String) {
+        
+        trackerCategoryStore.createCategory(TrackerCategory(title: title, trackers: []))
+        
+        if let selectedIndexPath {
+            tableView.deselectRow(at: selectedIndexPath, animated: false)
+            self.selectedIndexPath = nil
+            delegate?.setSelectedCategory(indexPath: nil)
+        }
+        
+        updateCategoryList()
+    }
+}
+
+// MARK: - UITableViewDelegate
 extension CategoryCatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryTableViewCell else { return }
         
-        if let selectedIndexPath = selectedIndexPath {
+        if let selectedIndexPath {
             guard let cell = tableView.cellForRow(at: selectedIndexPath) as? CategoryTableViewCell else { return }
             cell.setSelected(false)
         }

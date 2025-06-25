@@ -169,7 +169,8 @@ final class CreateTrackerViewController: UIViewController {
     private var selectedDays: Set<Weekday> = []
     private var selectedColor: UIColor?
     private var selectedEmoji: Character?
-    private lazy var categories = LoadTrackersService.shared.loadData()
+    private var categories: [TrackerCategory] = []
+    private let trackerCategoryStore = TrackerCategoryStore()
     
     private let categoryView = HabitOptionView(title: "Категория")
     private let scheduleView = HabitOptionView(title: "Расписание")
@@ -372,9 +373,11 @@ final class CreateTrackerViewController: UIViewController {
 
 // MARK: - CategoryCatalogViewControllerProtocol
 extension CreateTrackerViewController: CategoryCatalogViewControllerProtocol {
-    func setSelectedCategory(indexPath: IndexPath) {
-        let categories = LoadTrackersService.shared.loadData()        
-        categoryView.setSubtitle(categories[indexPath.row].title)
+    func setSelectedCategory(indexPath: IndexPath?) {
+        
+        categories = trackerCategoryStore.categories
+        
+        categoryView.setSubtitle(indexPath != nil ? categories[indexPath!.row].title : nil)
         selectedCategory = indexPath
         
         validateForm()

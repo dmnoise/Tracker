@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol CategoryCreateViewControllerProtocol: AnyObject {
+    func didTapCreateCategory(_ title: String)
+}
+
 final class CategoryCreateViewController: UIViewController {
+    
+    weak var delegate: CategoryCreateViewControllerProtocol?
     
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
@@ -50,8 +56,10 @@ final class CategoryCreateViewController: UIViewController {
     }()
     
     // MARK: - Init
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    init(delegate: CategoryCreateViewControllerProtocol) {
         super.init(nibName: nil, bundle: nil)
+        
+        self.delegate = delegate
     }
     
     required init?(coder: NSCoder) {
@@ -65,6 +73,8 @@ final class CategoryCreateViewController: UIViewController {
         nameTextField.delegate = self
         setupUI()
         createButton(isEnabled: false)
+        
+        createButton.addTarget(self, action: #selector(didTapCreateCategoryButton), for: .touchUpInside)
     }
     
     // MARK: - Private methods
@@ -90,6 +100,14 @@ final class CategoryCreateViewController: UIViewController {
     private func createButton(isEnabled: Bool) {
         createButton.isEnabled = isEnabled
         createButton.backgroundColor = isEnabled ? .yaBlack : .yaDarkGray
+    }
+    
+    @objc
+    private func didTapCreateCategoryButton() {
+        guard let name = nameTextField.text else { return }
+        
+        delegate?.didTapCreateCategory(name)        
+        dismiss(animated: true)
     }
 }
 

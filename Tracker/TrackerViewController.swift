@@ -73,8 +73,10 @@ class TrackerViewController: UIViewController {
     private var categories: [TrackerCategory]?
     private var visibleCategories: [TrackerCategory]?
     private var completedTrackers: Set<TrackerRecord> = []
-
-    private let loadTrackersService = LoadTrackersService.shared
+    
+    private let trackerStore = TrackerStore()
+    private let categoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     private let paramCV = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
   
@@ -82,21 +84,18 @@ class TrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateData()
+        updateVisibleTrackers()
         setupUI()
         setupNavigationBar()
         setupConstrains()
         setupCollectionView()
         view.addTapGestureToHideKeyboard()
+        
+        trackerStore.delegate = self
     }
 
     
     // MARK: - Private methods
-    private func updateData() {
-        categories = loadTrackersService.loadData()
-        updateVisibleTrackers()
-    }
-    
     private func setupUI() {
         view.backgroundColor = .white
     }
@@ -180,13 +179,21 @@ class TrackerViewController: UIViewController {
         }
     }
     
+    private func updateVisibleTrackersFromModelOnly() {
+        completedTrackers = trackerRecordStore.records
+        categories = categoryStore.categories
+        visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
+    }
+    
     private func updateVisibleTrackers() {
+        completedTrackers = trackerRecordStore.records
+        categories = categoryStore.categories
+        
         guard let categories else { return }
         
         visibleCategories = categories.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
         
         updatePlaceholderState()
-        collectionView.reloadData()
     }
     
     // MARK: - objc
@@ -195,6 +202,7 @@ class TrackerViewController: UIViewController {
         self.selectedDate = selectedDate
         
         updateVisibleTrackers()
+        collectionView.reloadData()
     }
     
     @objc private func createTracker() {
@@ -205,11 +213,36 @@ class TrackerViewController: UIViewController {
     }
 }
 
+extension TrackerViewController: TrackerStoreDelegate {
+    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+        let oldSectionCount = collectionView.numberOfSections
+        updateVisibleTrackersFromModelOnly()
+        let newSectionCount = visibleCategories?.count ?? 0
+
+        if oldSectionCount != newSectionCount || !update.inserted.isEmpty {
+            collectionView.reloadData()
+            return
+        }
+        
+        collectionView.performBatchUpdates {
+            collectionView.insertItems(at: update.inserted)
+            collectionView.deleteItems(at: update.deleted)
+            collectionView.reloadItems(at: update.updated)
+            for move in update.moved {
+                collectionView.moveItem(at: move.from, to: move.to)
+            }
+        }
+
+        updatePlaceholderState()
+    }
+}
+
+
 // MARK: - TrackerViewControllerProtocol
 extension TrackerViewController: TrackerViewControllerProtocol {
     func didTapCreate(tracker: Tracker, to category: String) {
-        loadTrackersService.addTracker(tracker, to: category)
-        updateData()
+        trackerStore.createTracker(tracker, to: category)
+        updatePlaceholderState()
     }
 }
 
@@ -226,8 +259,10 @@ extension TrackerViewController: TrackerCellDelegate {
         
         if isCompleted {
             completedTrackers.insert(tracker)
+            try? trackerRecordStore.addRecord(tracker)
         } else {
             completedTrackers.remove(tracker)
+            try? trackerRecordStore.removeRecord(tracker)
         }
         
         cell.changeCompletedButtonStatus()
