@@ -179,21 +179,15 @@ class TrackerViewController: UIViewController {
         }
     }
     
-    private func updateVisibleTrackersFromModelOnly() {
+    private func updateVisibleTrackers(updateUI: Bool = true) {
         completedTrackers = trackerRecordStore.records
         categories = categoryStore.categories
         visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
-    }
-    
-    private func updateVisibleTrackers() {
-        completedTrackers = trackerRecordStore.records
-        categories = categoryStore.categories
-        
-        guard let categories else { return }
-        
-        visibleCategories = categories.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
-        
-        updatePlaceholderState()
+
+        if updateUI {
+            updatePlaceholderState()
+            collectionView.reloadData()
+        }
     }
     
     // MARK: - objc
@@ -216,7 +210,7 @@ class TrackerViewController: UIViewController {
 extension TrackerViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
         let oldSectionCount = collectionView.numberOfSections
-        updateVisibleTrackersFromModelOnly()
+        updateVisibleTrackers(updateUI: false)
         let newSectionCount = visibleCategories?.count ?? 0
 
         if oldSectionCount != newSectionCount || !update.inserted.isEmpty {
@@ -248,24 +242,29 @@ extension TrackerViewController: TrackerViewControllerProtocol {
 
 // MARK: - TrackerCellDelegate
 extension TrackerViewController: TrackerCellDelegate {
-    func didTapCompletedButton(_ cell: TrackerCell, isCompleted: Bool) {
+    func didTapCompletedButton(at indexPath: IndexPath, isCompleted: Bool) {
         
         guard
-            let trackerID = cell.trackerID,
-            selectedDate <= Date()
+            selectedDate <= Date(),
+            let tracker = visibleCategories?[indexPath.section].trackers[indexPath.row]
         else { return }
         
-        let tracker = TrackerRecord(trackerID: trackerID, date: selectedDate)
+        let record = TrackerRecord(trackerID: tracker.id, date: selectedDate)
         
-        if isCompleted {
-            completedTrackers.insert(tracker)
-            try? trackerRecordStore.addRecord(tracker)
-        } else {
-            completedTrackers.remove(tracker)
-            try? trackerRecordStore.removeRecord(tracker)
+        do {
+            if isCompleted {
+                try trackerRecordStore.addRecord(record)
+                completedTrackers.insert(record)
+            } else {
+                try trackerRecordStore.removeRecord(record)
+                completedTrackers.remove(record)
+            }
+            
+            guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerCell else { return }
+            cell.changeCompletedButtonStatus()
+        } catch {
+            print("Ошибка изменения записи :(\nError: \(error)")
         }
-        
-        cell.changeCompletedButtonStatus()
     }
 }
 
@@ -290,6 +289,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         cell.prepareForReuse()
         cell.delegate = self
         cell.configure(
+            indexPath: indexPath,
             tracker: tracker,
             isCompletedToday: isCompleted(for: tracker.id, on: selectedDate),
             countDays: countOfCompleted(for: tracker.id)
@@ -313,7 +313,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! SupplementaryView
-        view.titleLabel.text = categories?[indexPath.section].title
+        view.titleLabel.text = visibleCategories?[indexPath.section].title
         
         return view
     }
