@@ -10,7 +10,7 @@ import UIKit
 final class CategoryTableViewCell: UITableViewCell {
     static let identifier = "CategoryCell"
     
-    private let checkmarkImageView: UIImageView = {
+    private lazy var checkmarkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(resource: .imageCheckmark)
         imageView.isHidden = true

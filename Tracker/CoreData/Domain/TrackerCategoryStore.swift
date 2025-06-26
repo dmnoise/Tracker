@@ -5,7 +5,6 @@
 //  Created by Dmitriy Noise on 18.06.2025.
 //
 
-import UIKit
 import CoreData
 
 enum TrackerCategoryStoreError: Error {
@@ -44,11 +43,11 @@ final class TrackerCategoryStore: NSObject {
     private var movedIndexes: Set<TrackerCategoryStoreUpdate.Move>?
 
     // MARK: - init
-    convenience override init() {
-        try! self.init(context: CoreDataStack.shared.context)
+    convenience init?(usingDefaultContext: Bool = true) {
+        self.init(context: CoreDataStack.shared.context)
     }
 
-    init(context: NSManagedObjectContext) throws {
+    init?(context: NSManagedObjectContext) {
         self.context = context
         super.init()
 
@@ -63,8 +62,13 @@ final class TrackerCategoryStore: NSObject {
             cacheName: nil
         )
         controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
+        fetchedResultsController = controller
+        do {
+            try controller.performFetch()
+        } catch {
+            print("Ошибка fetch\nError: \(error)")
+            return nil
+        }
     }
     
     var categories: [TrackerCategory] {
@@ -89,7 +93,6 @@ final class TrackerCategoryStore: NSObject {
         
         do {
             try context.save()
-            print("Category save!")
         } catch {
             print("Failed to save category :(\nError: \(error.localizedDescription)")
         }
@@ -138,19 +141,31 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
+        guard
+            let insertedIndexes,
+            let deletedIndexes,
+            let updatedIndexes,
+            let movedIndexes
+        else {
+            assertionFailure("Изменения категорий не были инициализированы")
+            return
+        }
+        
         delegate?.store(
             self,
             didUpdate: TrackerCategoryStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                deletedIndexes: deletedIndexes!,
-                updatedIndexes: updatedIndexes!,
-                movedIndexes: movedIndexes!
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes,
+                updatedIndexes: updatedIndexes,
+                movedIndexes: movedIndexes
             )
         )
-        insertedIndexes = nil
-        deletedIndexes = nil
-        updatedIndexes = nil
-        movedIndexes = nil
+        
+        self.insertedIndexes = nil
+        self.deletedIndexes = nil
+        self.updatedIndexes = nil
+        self.movedIndexes = nil
     }
 
     func controller(
@@ -162,19 +177,31 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     ) {
         switch type {
         case .insert:
-            guard let indexPath = newIndexPath else { fatalError() }
-            insertedIndexes?.insert(indexPath.item)
+            guard let newIndexPath else {
+                assertionFailure("indexPath is nil for \(type)")
+                return
+            }
+            insertedIndexes?.insert(newIndexPath.item)
         case .delete:
-            guard let indexPath = indexPath else { fatalError() }
+            guard let indexPath else {
+                assertionFailure("indexPath is nil for \(type)")
+                return
+            }
             deletedIndexes?.insert(indexPath.item)
         case .update:
-            guard let indexPath = indexPath else { fatalError() }
+            guard let indexPath else {
+                assertionFailure("indexPath is nil for \(type)")
+                return
+            }
             updatedIndexes?.insert(indexPath.item)
         case .move:
-            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else { fatalError() }
+            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else {
+                assertionFailure("Move index paths are nil")
+                return
+            }
             movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
         @unknown default:
-            fatalError()
+            break
         }
     }
 }

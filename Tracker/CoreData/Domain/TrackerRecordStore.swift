@@ -72,8 +72,20 @@ final class TrackerRecordStore {
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "trackerId == %@", trackerID as CVarArg)
         
-        let result = try? context.fetch(request)
-        return result?.map { TrackerRecord(trackerID: $0.trackerId!, date: $0.date!) } ?? []
+        do {
+            let result = try context.fetch(request)
+            return result.compactMap { record in
+                guard
+                    let id = record.trackerId,
+                    let date = record.date
+                else { return nil }
+                
+                return TrackerRecord(trackerID: id, date: date)
+            }
+        } catch {
+            print("Ошибка fetch\nError: \(error.localizedDescription)")
+            return []
+        }
     }
 }
 

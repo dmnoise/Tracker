@@ -70,6 +70,8 @@ final class TrackerStore: NSObject {
     
     // MARK: - Public Methods
     func createTracker(_ trackerModel: Tracker, to category: String) {
+        guard let trackerCategoryStore else { return }
+        
         let tracker = TrackerCoreData(context: context)
         tracker.id = trackerModel.id
         tracker.name = trackerModel.name
@@ -83,15 +85,6 @@ final class TrackerStore: NSObject {
         } catch {
             print("Ошибка сохранения трекера :(\nError: \(error.localizedDescription)")
         }
-    }
-    
-    private func countFetch(with context: NSManagedObjectContext) -> Int {
-        let request = NSFetchRequest<TrackerCoreData>(entityName: "Tracker")
-        request.resultType = .countResultType
-       
-        let authors = try! context.execute(request) as! NSAsynchronousFetchResult<NSFetchRequestResult>
-        
-        return authors.finalResult?.count ?? 0
     }
 }
 

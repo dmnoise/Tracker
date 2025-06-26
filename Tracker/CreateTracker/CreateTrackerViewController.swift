@@ -374,6 +374,7 @@ final class CreateTrackerViewController: UIViewController {
 // MARK: - CategoryCatalogViewControllerProtocol
 extension CreateTrackerViewController: CategoryCatalogViewControllerProtocol {
     func setSelectedCategory(indexPath: IndexPath?) {
+        guard let trackerCategoryStore else { return }
         
         categories = trackerCategoryStore.categories
         

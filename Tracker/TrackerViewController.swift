@@ -180,6 +180,8 @@ class TrackerViewController: UIViewController {
     }
     
     private func updateVisibleTrackers(updateUI: Bool = true) {
+        guard let categoryStore else { return }
+        
         completedTrackers = trackerRecordStore.records
         categories = categoryStore.categories
         visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
@@ -254,11 +256,11 @@ extension TrackerViewController: TrackerCellDelegate {
         do {
             if isCompleted {
                 try trackerRecordStore.addRecord(record)
-                completedTrackers.insert(record)
             } else {
                 try trackerRecordStore.removeRecord(record)
-                completedTrackers.remove(record)
             }
+            
+            updateVisibleTrackers(updateUI: false)
             
             guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerCell else { return }
             cell.changeCompletedButtonStatus()
@@ -286,7 +288,6 @@ extension TrackerViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
          
-        cell.prepareForReuse()
         cell.delegate = self
         cell.configure(
             indexPath: indexPath,

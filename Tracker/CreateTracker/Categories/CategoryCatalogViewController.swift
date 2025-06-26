@@ -98,7 +98,7 @@ final class CategoryCatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        categories = trackerCategoryStore.categories
+        updateCategoryList(reloadData: false)
         
         setupUI()
         
@@ -110,7 +110,9 @@ final class CategoryCatalogViewController: UIViewController {
     }
     
     // MARK: - Private methods
-    private func updateCategoryList() {
+    private func updateCategoryList(reloadData: Bool = true) {
+        guard let trackerCategoryStore else { return }
+        
         categories = trackerCategoryStore.categories
         placeholderView.isHidden = !categories.isEmpty
         
@@ -154,6 +156,8 @@ final class CategoryCatalogViewController: UIViewController {
 
 extension CategoryCatalogViewController: CategoryCreateViewControllerProtocol {
     func didTapCreateCategory(_ title: String) {
+        
+        guard let trackerCategoryStore else { return }
         
         trackerCategoryStore.createCategory(TrackerCategory(title: title, trackers: []))
         
