@@ -15,6 +15,8 @@ final class SplashScreen: UIViewController {
     
     weak var delegate: SplashScreenDelegate?
     
+    private let defaults = UserDefaults.standard
+    
     // MARK: - Private properties
     private lazy var logo: UIImageView = {
         let image = UIImage(resource: .logo)
@@ -33,7 +35,17 @@ final class SplashScreen: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        delegate?.switchToTabBar()
+        if !defaults.bool(forKey: "firstLaunch") {
+            defaults.set(true, forKey: "firstLaunch")
+            
+            let onboarding = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+            onboarding.modalPresentationStyle = .fullScreen
+            onboarding.modalTransitionStyle = .crossDissolve
+            
+            present(onboarding, animated: true)
+        } else {
+            delegate?.switchToTabBar()
+        }
     }
     
     // MARK: - Private methods
