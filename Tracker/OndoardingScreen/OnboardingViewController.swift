@@ -107,11 +107,11 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
 extension OnboardingViewController: UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        guard
+            let currentViewController = pageViewController.viewControllers?.first,
+            let currentIndex = pages.firstIndex(of: currentViewController)
+        else { return }
         
-        if let currentViewController = pageViewController.viewControllers?.first,
-           let currentIndex = pages.firstIndex(of: currentViewController) {
-            
-            pageControl.currentPage = currentIndex
-        }
+        pageControl.currentPage = currentIndex
     }
 }

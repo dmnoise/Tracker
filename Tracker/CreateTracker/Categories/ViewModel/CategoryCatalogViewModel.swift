@@ -15,21 +15,12 @@ final class CategoryCatalogViewModel {
     private let trackerCategoryStore = TrackerCategoryStore()
     
     // MARK: - Init
-    init(selectedIndexPath: IndexPath? = nil) {
+    init(selectedIndexPath: IndexPath?) {
         self.selectedIndexPath.value = selectedIndexPath
         loadCategories()
     }
     
     // MARK: - Public Methods
-    func loadCategories() {
-        guard let trackerCategoryStore else {
-            print("Ошибка загрузки категорий")
-            return
-        }
-        
-        categories.value = trackerCategoryStore.categories
-    }
-    
     func numberOfRows() -> Int {
         categories.value.count
     }
@@ -46,7 +37,6 @@ final class CategoryCatalogViewModel {
     }
     
     func createCategory(title: String) {
-        
         guard let trackerCategoryStore else { return }
         
         trackerCategoryStore.createCategory(
@@ -54,5 +44,15 @@ final class CategoryCatalogViewModel {
         )
         
         loadCategories()
+    }
+    
+    // MARK: - Private methods
+    private func loadCategories() {
+        guard let trackerCategoryStore else {
+            print("Ошибка загрузки категорий")
+            return
+        }
+        
+        categories.value = trackerCategoryStore.categories
     }
 }
