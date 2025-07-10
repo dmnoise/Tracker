@@ -15,6 +15,7 @@ final class CategoryCreateViewController: UIViewController {
     
     weak var delegate: CategoryCreateViewControllerProtocol?
     
+    // MARK: - UI
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Новая категория"

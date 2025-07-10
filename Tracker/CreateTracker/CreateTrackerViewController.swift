@@ -336,9 +336,11 @@ final class CreateTrackerViewController: UIViewController {
     
     // MARK: - objc
     @objc private func didTapCategoryButton() {
-        present(UINavigationController(
-                rootViewController:CategoryCatalogViewController(delegate: self, selectedIndexPath: selectedCategory)
-        ), animated: true)
+        
+        let viewModel = CategoryCatalogViewModel(selectedIndexPath: selectedCategory)
+        let viewController = CategoryCatalogViewController(viewModel: viewModel, delegate: self)
+        
+        present(UINavigationController(rootViewController:viewController), animated: true)
     }
     
     @objc private func didTapScheduleButton() {

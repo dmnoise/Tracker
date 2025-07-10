@@ -14,7 +14,9 @@ protocol CategoryCatalogViewControllerProtocol: AnyObject {
 final class CategoryCatalogViewController: UIViewController {
     
     weak var delegate: CategoryCatalogViewControllerProtocol?
+    private let viewModel: CategoryCatalogViewModel
     
+    // MARK: - UI
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = "Категория"
@@ -78,16 +80,14 @@ final class CategoryCatalogViewController: UIViewController {
         return obj
     }()
     
-    private let trackerCategoryStore = TrackerCategoryStore()
-    private var categories: [TrackerCategory] = []
-    private var selectedIndexPath: IndexPath?
-    
     // MARK: - Init
-    init(delegate: CategoryCatalogViewControllerProtocol? = nil, selectedIndexPath: IndexPath? = nil) {
+    init(
+        viewModel: CategoryCatalogViewModel,
+        delegate: CategoryCatalogViewControllerProtocol? = nil
+    ) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        
         self.delegate = delegate
-        self.selectedIndexPath = selectedIndexPath
     }
     
     required init?(coder: NSCoder) {
@@ -97,34 +97,20 @@ final class CategoryCatalogViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        updateCategoryList(reloadData: false)
-        
+                
         setupUI()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
+        setupTableView()
+        binding()
         
         createButton.addTarget(self, action: #selector(didTapCreateCategoryButton), for: .touchUpInside)
     }
     
     // MARK: - Private methods
-    private func updateCategoryList(reloadData: Bool = true) {
-        guard let trackerCategoryStore else { return }
-        
-        categories = trackerCategoryStore.categories
-        placeholderView.isHidden = !categories.isEmpty
-        
-        tableView.reloadData()
-    }
-    
     private func setupUI() {
         view.addSubviews(placeholderView, createButton, tableView)
         view.backgroundColor = .white
         placeholderView.addArrangedSubview(imageView)
         placeholderView.addArrangedSubview(label)
-        placeholderView.isHidden = !categories.isEmpty
         
         navigationItem.titleView = titleLabel
         
@@ -144,6 +130,34 @@ final class CategoryCatalogViewController: UIViewController {
         ])
     }
     
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
+    }
+    
+    private func binding() {
+        viewModel.categories.bind { [weak self] _ in
+            guard let self else { return }
+            self.placeholderView.isHidden = !viewModel.categories.value.isEmpty
+            
+            if self.view.window != nil {
+                self.tableView.reloadData()
+            }
+        }
+        
+        viewModel.selectedIndexPath.bind { [weak self] selectedIndexPath in
+            guard let self, let selectedIndexPath else { return }
+            
+            for cell in self.tableView.visibleCells {
+                guard let indexPath = self.tableView.indexPath(for: cell) else { continue }
+                
+                let isSelected = indexPath == selectedIndexPath
+                (cell as? CategoryTableViewCell)?.setSelected(isSelected)
+            }
+        }
+    }
+    
     // MARK: - objc
     @objc private func didTapCreateCategoryButton() {
         let vc = UINavigationController(
@@ -154,45 +168,32 @@ final class CategoryCatalogViewController: UIViewController {
     }
 }
 
+// MARK: - CategoryCreateViewControllerProtocol
 extension CategoryCatalogViewController: CategoryCreateViewControllerProtocol {
     func didTapCreateCategory(_ title: String) {
         
-        guard let trackerCategoryStore else { return }
+        viewModel.createCategory(title: title)
         
-        trackerCategoryStore.createCategory(TrackerCategory(title: title, trackers: []))
-        
-        if let selectedIndexPath {
-            tableView.deselectRow(at: selectedIndexPath, animated: false)
-            self.selectedIndexPath = nil
-            delegate?.setSelectedCategory(indexPath: nil)
-        }
-        
-        updateCategoryList()
+        viewModel.selectedIndexPath.value = nil
+        delegate?.setSelectedCategory(indexPath: nil)
     }
 }
 
 // MARK: - UITableViewDelegate
 extension CategoryCatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryTableViewCell else { return }
-        
-        if let selectedIndexPath {
-            guard let cell = tableView.cellForRow(at: selectedIndexPath) as? CategoryTableViewCell else { return }
-            cell.setSelected(false)
-        }
-        
-        cell.setSelected(true)
-        selectedIndexPath = indexPath
-        
+                
+        viewModel.selectRow(at: indexPath)
         delegate?.setSelectedCategory(indexPath: indexPath)
         
         tableView.deselectRow(at: indexPath, animated: false)
     }
 }
 
+// MARK: - UITableViewDataSource
 extension CategoryCatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        categories.count
+        viewModel.numberOfRows()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -202,9 +203,10 @@ extension CategoryCatalogViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let isSelected = selectedIndexPath == indexPath
-        cell.textLabel?.text = categories[indexPath.row].title
-        cell.setSelected(isSelected)
+        let cellVM = viewModel.cellViewModel(at: indexPath)
+        
+        cell.textLabel?.text = cellVM.title
+        cell.setSelected(cellVM.isSelected)
     
         return cell
     }
