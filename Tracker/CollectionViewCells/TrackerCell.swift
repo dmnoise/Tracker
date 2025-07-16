@@ -72,7 +72,11 @@ final class TrackerCell: UICollectionViewCell {
     private var isCompleted = false
     private var countDays: Int = 0 {
         didSet {
-            counterDaysLabel.text = "\(countDays) \(dayWord(for: countDays))"
+            let daysString = String.localizedStringWithFormat(
+                NSLocalizedString("countDays", comment: "Кол-во отмеченных дней"),
+                countDays
+            )
+            counterDaysLabel.text = daysString
         }
     }
     
@@ -132,24 +136,6 @@ final class TrackerCell: UICollectionViewCell {
         
         completeButton.setImage(UIImage(resource: image), for: .normal)
         completeButton.layer.opacity = opacity
-    }
-    
-    private func dayWord(for number: Int) -> String {
-        let remainder10 = number % 10
-        let remainder100 = number % 100
-        
-        if remainder100 >= 11 && remainder100 <= 14 {
-            return "дней"
-        }
-        
-        switch remainder10 {
-        case 1:
-            return "день"
-        case 2, 3, 4:
-            return "дня"
-        default:
-            return "дней"
-        }
     }
     
     private func setupConstraint() {
