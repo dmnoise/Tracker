@@ -1,0 +1,49 @@
+/*
+  Localizable.strings
+  Tracker
+
+  Created by Dmitriy Noise on 16.07.2025.
+  
+*/
+
+// Заголовки
+"tracker" = "Tracker";
+"find" = "Suchen";
+"stats" = "Statistiken";
+
+// Tab bar
+"tabBarTrackers" = "Tracker";
+"tabBarStats" = "Statistiken";
+
+// Экран создания трекера
+"createTracker" = "Tracker erstellen";
+"buttonHabit" = "Gewohnheit";
+"buttonEvent" = "Unregelmäßiges Ereignis";
+"characterLimit" = "Beschränkung auf %d Zeichen";
+
+// Экран создание привычки/cобытия
+"newHabit" = "Neue Gewohnheit";
+"newEvent" = "Neues unregelmäßiges Ereignis";
+"newCategory" = "Neue Kategorie";
+"textInputTracker" = "Trackername eingeben";
+"textInputCategory" = "Kategorietitel eingeben";
+"category" = "Kategorie";
+"schedue" = "Zeitplan";
+"emoji" = "Emoji";
+"color" = "Farbe";
+"create" = "Erstellen";
+"cancel" = "Abbrechen";
+
+// Кнопки
+"addCategory" = "Kategorie hinzufügen";
+"ready" = "Fertig";
+
+// Заглушки
+"trackerPlaceholder" = "Was wollen wir verfolgen?";
+"statsPlaceholder" = "Noch nichts zu analysieren";
+"categoryPlaceholder" = "Gewohnheiten und Ereignisse können\nsinnvoll gruppiert werden";
+
+// Онбординг
+"firstScreen" = "Verfolge nur, was du wirklich willst";
+"twoScreen" = "Auch wenn es keine Liter Wasser oder Yoga sind";
+"technology" = "Das ist Technologie!";

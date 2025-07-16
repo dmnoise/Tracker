@@ -1,0 +1,49 @@
+/*
+  Localizable.strings
+  Tracker
+
+  Created by Dmitriy Noise on 16.07.2025.
+  
+*/
+
+// Titles
+"tracker" = "Tracker";
+"find" = "Search";
+"stats" = "Statistics";
+
+// Tab bar
+"tabBarTrackers" = "Trackers";
+"tabBarStats" = "Statistics";
+
+// Tracker creation screen
+"createTracker" = "Create Tracker";
+"buttonHabit" = "Habit";
+"buttonEvent" = "Irregular Event";
+"characterLimit" = "Limit %d characters";
+
+// New habit/event screen
+"newHabit" = "New Habit";
+"newEvent" = "New Irregular Event";
+"newCategory" = "New Category";
+"textInputTracker" = "Enter tracker name";
+"textInputCategory" = "Enter category name";
+"category" = "Category";
+"schedue" = "Schedule";
+"emoji" = "Emoji";
+"color" = "Color";
+"create" = "Create";
+"cancel" = "Cancel";
+
+// Buttons
+"addCategory" = "Add Category";
+"ready" = "Done";
+
+// Placeholders
+"trackerPlaceholder" = "What would you like to track?";
+"statsPlaceholder" = "Nothing to analyze yet";
+"categoryPlaceholder" = "Habits and events can be\ngrouped by meaning";
+
+// Onboarding
+"firstScreen" = "Track only what you want";
+"twoScreen" = "Even if it’s not liters of water or yoga";
+"technology" = "Now that's technology!";

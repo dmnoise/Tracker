@@ -16,13 +16,13 @@ final class TabBarController: UITabBarController {
         let statsVC = UINavigationController(rootViewController: StatsViewController())
         
         let tabBatItemTracker = UITabBarItem(
-            title: "Трекеры",
+            title: NSLocalizedString("tabBarTrackers", comment: ""),
             image: UIImage(resource: .tracker),
             selectedImage: nil
         )
         
         let tabBatItemStats = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("tabBarStats", comment: ""),
             image: UIImage(resource: .stats),
             selectedImage: nil
         )

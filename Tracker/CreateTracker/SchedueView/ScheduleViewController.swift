@@ -29,7 +29,7 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Расписание"
+        obj.text = NSLocalizedString("schedue", comment: "")
         obj.textColor = .yaBlack
         obj.font = UIFont.systemFont(ofSize: 16)
         
@@ -54,7 +54,7 @@ final class ScheduleViewController: UIViewController {
         obj.backgroundColor = .yaBlack
         obj.tintColor = .yaWhite
         obj.layer.cornerRadius = 16
-        obj.setTitle("Готово", for: .normal)
+        obj.setTitle(NSLocalizedString("ready", comment: ""), for: .normal)
         
         return obj
     }()

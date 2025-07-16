@@ -14,7 +14,7 @@ protocol TrackerViewControllerProtocol: AnyObject {
 class TrackerViewController: UIViewController {    
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Трекер"
+        obj.text = NSLocalizedString("tracker", comment: "")
         obj.textColor = .black
         obj.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         
@@ -23,7 +23,7 @@ class TrackerViewController: UIViewController {
     
     private lazy var searchView: UISearchBar = {
         let obj = UISearchBar()
-        obj.placeholder = "Поиск"
+        obj.placeholder = NSLocalizedString("find", comment: "")
         obj.searchBarStyle = .minimal
         
         return obj
@@ -31,7 +31,7 @@ class TrackerViewController: UIViewController {
     
     private lazy var label: UILabel = {
         let obj = UILabel()
-        obj.text = "Что будем отслеживать?"
+        obj.text = NSLocalizedString("trackerPlaceholder", comment: "")
         obj.font = .systemFont(ofSize: 12)
         obj.textColor = .yaBlack
         obj.sizeToFit()

@@ -11,7 +11,7 @@ final class StatsViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Статистика"
+        obj.text = NSLocalizedString("stats", comment: "")
         obj.textColor = .yaBlack
         obj.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         
@@ -20,7 +20,7 @@ final class StatsViewController: UIViewController {
     
     private lazy var label: UILabel = {
         let obj = UILabel()
-        obj.text = "Анализировать пока нечего"
+        obj.text = NSLocalizedString("statsPlaceholder", comment: "")
         obj.textColor = .yaBlack
         obj.font = .systemFont(ofSize: 12)
         

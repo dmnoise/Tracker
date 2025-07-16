@@ -10,8 +10,14 @@ import UIKit
 final class OnboardingViewController: UIPageViewController {
     
     private let pages: [UIViewController] = [
-        ScreenView(text: "Отслеживайте только то, что хотите", image: UIImage(resource: .blueOnboardingBackground)),
-        ScreenView(text: "Даже если это не литры воды и йога", image: UIImage(resource: .redOnboardingBackground))
+        ScreenView(
+            text: NSLocalizedString("firstScreen", comment: ""),
+            image: UIImage(resource: .blueOnboardingBackground)
+        ),
+        ScreenView(
+            text: NSLocalizedString("twoScreen", comment: ""),
+            image: UIImage(resource: .redOnboardingBackground)
+        )
     ]
     
     private lazy var pageControl: UIPageControl = {
@@ -27,7 +33,8 @@ final class OnboardingViewController: UIPageViewController {
     
     private lazy var nextButton: UIButton = {
         let obj = UIButton()
-        obj.setTitle("Вот это технологии!", for: .normal)
+        let title = NSLocalizedString("technology", comment: "")
+        obj.setTitle(title, for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
         obj.backgroundColor = .yaBlack
         obj.layer.cornerRadius = 16

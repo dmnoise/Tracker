@@ -31,7 +31,6 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: - UI
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Новая привычка"
         obj.textColor = .yaBlack
         obj.font = UIFont.systemFont(ofSize: 16)
         
@@ -60,7 +59,7 @@ final class CreateTrackerViewController: UIViewController {
         obj.backgroundColor = .fieldBackground
         obj.layer.cornerRadius = 16
         obj.attributedPlaceholder = NSAttributedString(
-            string: "Введите название трекера",
+            string: NSLocalizedString("textInputTracker", comment: ""),
             attributes: [.foregroundColor: UIColor.yaDarkGray]
         )
         
@@ -78,8 +77,9 @@ final class CreateTrackerViewController: UIViewController {
         let obj = UILabel()
         obj.font = UIFont.systemFont(ofSize: 17)
         obj.textColor = .lightRed
-        obj.text = "Ограничение \(Constants.maxNameLength) символов"
         obj.isHidden = true
+        let text = NSLocalizedString("characterLimit", comment: "")
+        obj.text = String(format: text, Constants.maxNameLength)
         
         return obj
     }()
@@ -121,7 +121,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let obj = UIButton()
-        obj.setTitle("Отменить", for: .normal)
+        obj.setTitle(NSLocalizedString("cancel", comment: "Кнопка отмены создания трекера"), for: .normal)
         obj.setTitleColor(.lightRed, for: .normal)
         obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         obj.backgroundColor = .yaWhite
@@ -134,7 +134,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let obj = UIButton()
-        obj.setTitle("Создать", for: .normal)
+        obj.setTitle(NSLocalizedString("create", comment: "Кнопка создания трекера"), for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
         obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         obj.backgroundColor = .yaDarkGray
@@ -172,8 +172,8 @@ final class CreateTrackerViewController: UIViewController {
     private var categories: [TrackerCategory] = []
     private let trackerCategoryStore = TrackerCategoryStore()
     
-    private let categoryView = HabitOptionView(title: "Категория")
-    private let scheduleView = HabitOptionView(title: "Расписание")
+    private let categoryView = HabitOptionView(title: NSLocalizedString("category", comment: ""))
+    private let scheduleView = HabitOptionView(title: NSLocalizedString("schedue", comment: ""))
     
     private let paramCV = GeometricParams(cellCount: 6, leftInset: 16, rightInset: 16, cellSpacing: 5)
     private var collectionViewHeightConstraint: NSLayoutConstraint!
@@ -209,7 +209,9 @@ final class CreateTrackerViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .white
-        titleLabel.text = trackerType != .event ? "Новая привычка" : "Новое нерегулярное событие"
+        titleLabel.text = trackerType != .event
+            ? NSLocalizedString("newHabit", comment: "")
+            : NSLocalizedString("newEvent", comment: "")
         navigationItem.titleView = titleLabel
         
         view.addSubviews(scrollView, hStackButtoons)
@@ -454,7 +456,9 @@ extension CreateTrackerViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
                 
-        headerView.titleLabel.text = indexPath.section == 0 ? "Emoji" : "Цвет"
+        headerView.titleLabel.text = indexPath.section == 0
+            ? NSLocalizedString("emoji", comment: "")
+            : NSLocalizedString("color", comment: "")
         
         return headerView
     }

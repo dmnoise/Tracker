@@ -18,7 +18,7 @@ final class CategoryCreateViewController: UIViewController {
     // MARK: - UI
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Новая категория"
+        obj.text = NSLocalizedString("newCategory", comment: "")
         obj.textColor = .yaBlack
         obj.font = UIFont.systemFont(ofSize: 16)
         
@@ -32,7 +32,7 @@ final class CategoryCreateViewController: UIViewController {
         obj.backgroundColor = .fieldBackground
         obj.layer.cornerRadius = 16
         obj.attributedPlaceholder = NSAttributedString(
-            string: "Введите название категории",
+            string: NSLocalizedString("textInputCategory", comment: ""),
             attributes: [.foregroundColor: UIColor.yaDarkGray]
         )
         
@@ -47,7 +47,7 @@ final class CategoryCreateViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let obj = UIButton()
-        obj.setTitle("Готово", for: .normal)
+        obj.setTitle(NSLocalizedString("ready", comment: ""), for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
         obj.setTitleColor(.yaWhite, for: .disabled)
         obj.backgroundColor = .yaBlack

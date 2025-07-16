@@ -19,7 +19,7 @@ final class CategoryCatalogViewController: UIViewController {
     // MARK: - UI
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Категория"
+        obj.text = NSLocalizedString("category", comment: "")
         obj.textColor = .yaBlack
         obj.font = UIFont.systemFont(ofSize: 16)
         
@@ -28,7 +28,7 @@ final class CategoryCatalogViewController: UIViewController {
     
     private lazy var label: UILabel = {
         let obj = UILabel()
-        obj.text = "Привычки и события можно\nобьеденять по смыслу"
+        obj.text = NSLocalizedString("categoryPlaceholder", comment: "")
         obj.font = .systemFont(ofSize: 12)
         obj.textColor = .yaBlack
         obj.sizeToFit()
@@ -72,7 +72,7 @@ final class CategoryCatalogViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let obj = UIButton()
-        obj.setTitle("Добавить категорию", for: .normal)
+        obj.setTitle(NSLocalizedString("addCategory", comment: ""), for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
         obj.backgroundColor = .yaBlack
         obj.layer.cornerRadius = 16
