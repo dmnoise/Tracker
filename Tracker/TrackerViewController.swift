@@ -377,4 +377,35 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         return CGSize(width: cellWidth, height: 148)
     }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfiguration configuration: UIContextMenuConfiguration,
+        highlightPreviewForItemAt indexPath: IndexPath
+    ) -> UITargetedPreview? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerCell else {
+            return nil
+        }
+        
+        // Иначе не будет анимироваться больше ячейки
+        cell.contentView.clipsToBounds = false
+
+        let targetedView = cell.cardView
+        let parameters = UIPreviewParameters()
+        parameters.visiblePath = UIBezierPath(roundedRect: targetedView.bounds, cornerRadius: targetedView.layer.cornerRadius)
+        
+        return UITargetedPreview(view: targetedView, parameters: parameters)
+    }
+
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else { return nil }
+                
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            let edit = UIAction(title: "Изменить") { _ in }
+            let delete = UIAction(title: "Удалить", image: nil, attributes: .destructive) { _ in }
+            
+            return UIMenu(children: [edit,delete])
+        })
+    }
 }

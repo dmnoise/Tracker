@@ -18,7 +18,7 @@ final class TrackerCell: UICollectionViewCell {
     static let identifier = "TrackerCell"
     
     //MARK: - UI
-    private lazy var cardView: UIView = {
+    private(set) lazy var cardView: UIView = {
         let obj = UIView()
         obj.backgroundColor = .cGreen
         obj.layer.cornerRadius = 16
