@@ -21,7 +21,7 @@ class TrackerViewController: UIViewController {
         return obj
     }()
     
-    private lazy var searchView: UISearchBar = {
+    private lazy var searchBar: UISearchBar = {
         let obj = UISearchBar()
         obj.placeholder = NSLocalizedString("find", comment: "")
         obj.searchBarStyle = .minimal
@@ -92,6 +92,7 @@ class TrackerViewController: UIViewController {
         view.addTapGestureToHideKeyboard()
         
         trackerStore.delegate = self
+        searchBar.delegate = self
     }
 
     
@@ -101,7 +102,7 @@ class TrackerViewController: UIViewController {
     }
     
     private func setupConstrains() {
-        view.addSubviews(titleLabel, searchView, collectionView, placeholderView)
+        view.addSubviews(titleLabel, searchBar, collectionView, placeholderView)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -113,10 +114,10 @@ class TrackerViewController: UIViewController {
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             
-            searchView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            searchView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            searchView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
-            searchView.heightAnchor.constraint(equalToConstant: 36),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
+            searchBar.heightAnchor.constraint(equalToConstant: 36),
             
             placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -124,7 +125,7 @@ class TrackerViewController: UIViewController {
             imageView.widthAnchor.constraint(equalToConstant: 80),
             imageView.heightAnchor.constraint(equalToConstant: 80),
             
-            collectionView.topAnchor.constraint(equalTo: searchView.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -192,11 +193,33 @@ class TrackerViewController: UIViewController {
         }
     }
     
+    private func filterTrackers(searchText: String) {
+        guard let categories else { return }
+        
+        if searchText.isEmpty {
+            visibleCategories = categories
+        } else {
+            visibleCategories = categories.compactMap { category in
+                let filteredTrackers = category.trackers.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+                guard !filteredTrackers.isEmpty else { return nil }
+                return TrackerCategory(title: category.title, trackers: filteredTrackers)
+            }
+        }
+        collectionView.reloadData()
+    }
+    
+    private func resetSearchBar() {
+        searchBar.text = nil
+        searchBar.resignFirstResponder()
+        filterTrackers(searchText: "")
+    }
+    
     // MARK: - objc
     @objc private func datePickerValueChanget(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         self.selectedDate = selectedDate
         
+        resetSearchBar()
         updateVisibleTrackers()
         collectionView.reloadData()
     }
@@ -209,6 +232,14 @@ class TrackerViewController: UIViewController {
     }
 }
 
+// MARK: - UISearchBarDelegate
+extension TrackerViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterTrackers(searchText: searchText)
+    }
+}
+
+// MARK: - TrackerStoreDelegate
 extension TrackerViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
         let oldSectionCount = collectionView.numberOfSections
