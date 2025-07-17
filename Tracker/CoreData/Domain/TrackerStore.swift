@@ -86,6 +86,17 @@ final class TrackerStore: NSObject {
             print("Ошибка сохранения трекера :(\nError: \(error.localizedDescription)")
         }
     }
+    
+    func deleteTracker(at indexPath: IndexPath) {
+        let trackerToDelete = fetchedResultsController.object(at: indexPath)
+        context.delete(trackerToDelete)
+        
+        do {
+            try context.save()
+        } catch {
+            print("Ошибка удаления трекера :(\nError: \(error.localizedDescription)")
+        }
+    }
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {

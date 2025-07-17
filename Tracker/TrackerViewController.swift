@@ -399,11 +399,29 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        guard indexPaths.count > 0 else { return nil }
+        guard let indexPath = indexPaths.first else { return nil }
                 
         return UIContextMenuConfiguration(actionProvider: { actions in
             let edit = UIAction(title: "Изменить") { _ in }
-            let delete = UIAction(title: "Удалить", image: nil, attributes: .destructive) { _ in }
+            let delete = UIAction(title: "Удалить", image: nil, attributes: .destructive) { [weak self] _ in
+                guard let self else { return }
+                
+                let actions = [
+                    AlertAction(title: "Удалить", style: .destructive, handler: {
+                        self.trackerStore.deleteTracker(at: indexPath)
+                        self.updateVisibleTrackers()
+                    }),
+                    AlertAction(title: "Отмена", style: .cancel, handler: {})
+                ]
+                let model = AlertModel(
+                    title: "",
+                    message: "Вы уверены что хотите удалить трекер?",
+                    actions: actions,
+                    preferredStyle: .actionSheet
+                )
+                
+                AlertPresenter(from: model).presentAlert(from: self)
+            }
             
             return UIMenu(children: [edit,delete])
         })
