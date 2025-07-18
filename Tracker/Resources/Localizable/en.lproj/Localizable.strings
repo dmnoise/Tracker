@@ -39,6 +39,7 @@
 // Buttons
 "addCategory" = "Add Category";
 "ready" = "Done";
+"filters" = "Filters";
 
 // Placeholders
 "trackerPlaceholder" = "What would you like to track?";

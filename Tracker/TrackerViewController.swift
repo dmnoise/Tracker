@@ -29,6 +29,17 @@ class TrackerViewController: UIViewController {
         return obj
     }()
     
+    private lazy var searchButton: UIButton = {
+        let obj = UIButton()
+        obj.setTitle(NSLocalizedString("filters", comment: ""), for: .normal)
+        obj.setTitleColor(.yaWhite, for: .normal)
+        obj.backgroundColor = .yaBlue
+        obj.layer.cornerRadius = 16
+        obj.contentEdgeInsets = UIEdgeInsets(top: 14, left: 20, bottom: 14, right: 20)
+        
+        return obj
+    }()
+    
     private lazy var label: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("trackerPlaceholder", comment: "")
@@ -102,7 +113,7 @@ class TrackerViewController: UIViewController {
     }
     
     private func setupConstrains() {
-        view.addSubviews(titleLabel, searchBar, collectionView, placeholderView)
+        view.addSubviews(titleLabel, searchBar, collectionView, placeholderView, searchButton)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -111,6 +122,10 @@ class TrackerViewController: UIViewController {
         placeholderView.addArrangedSubview(label)
                 
         NSLayoutConstraint.activate([
+            searchButton.heightAnchor.constraint(equalToConstant: 50),
+            searchButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            searchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             
@@ -362,6 +377,22 @@ extension TrackerViewController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+        
+        if offsetY + frameHeight >= contentHeight - 20 {
+            UIView.animate(withDuration: 0.2) { [weak self] in
+                self?.searchButton.alpha = 0
+            }
+        } else {
+            UIView.animate(withDuration: 0.2) { [weak self] in
+                self?.searchButton.alpha = 1
+            }
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
         return CGSize(width: collectionView.frame.width, height: 44)

@@ -39,6 +39,7 @@
 // Кнопки
 "addCategory" = "Kategorie hinzufügen";
 "ready" = "Fertig";
+"filters" = "Filter";
 
 // Заглушки
 "trackerPlaceholder" = "Was wollen wir verfolgen?";
