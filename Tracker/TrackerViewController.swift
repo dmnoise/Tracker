@@ -29,7 +29,7 @@ class TrackerViewController: UIViewController {
         return obj
     }()
     
-    private lazy var searchButton: UIButton = {
+    private lazy var filterButton: UIButton = {
         let obj = UIButton()
         obj.setTitle(NSLocalizedString("filters", comment: ""), for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
@@ -116,7 +116,7 @@ class TrackerViewController: UIViewController {
     }
     
     private func setupConstrains() {
-        view.addSubviews(titleLabel, searchBar, collectionView, placeholderView, searchButton)
+        view.addSubviews(titleLabel, searchBar, collectionView, placeholderView, filterButton)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -125,9 +125,9 @@ class TrackerViewController: UIViewController {
         placeholderView.addArrangedSubview(label)
                 
         NSLayoutConstraint.activate([
-            searchButton.heightAnchor.constraint(equalToConstant: 50),
-            searchButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            searchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -185,6 +185,7 @@ class TrackerViewController: UIViewController {
     private func updatePlaceholderState() {
         let isHidden = !(visibleCategories?.isEmpty ?? true)
         placeholderView.isHidden = isHidden
+        filterButton.isHidden = !isHidden
     }
     
     private func countOfCompleted(for trackerID: UUID) -> Int {
@@ -395,11 +396,11 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         if offsetY + frameHeight >= contentHeight - 20 {
             UIView.animate(withDuration: 0.2) { [weak self] in
-                self?.searchButton.alpha = 0
+                self?.filterButton.alpha = 0
             }
         } else {
             UIView.animate(withDuration: 0.2) { [weak self] in
-                self?.searchButton.alpha = 1
+                self?.filterButton.alpha = 1
             }
         }
     }
