@@ -12,5 +12,6 @@ enum Constants {
     enum TrackerType {
         case habbit
         case event
+        case edit
     }
 }

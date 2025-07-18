@@ -25,6 +25,7 @@
 "newHabit" = "New Habit";
 "newEvent" = "New Irregular Event";
 "newCategory" = "New Category";
+"editingHabit" = "Editing habit";
 "textInputTracker" = "Enter tracker name";
 "textInputCategory" = "Enter category name";
 "category" = "Category";
@@ -33,6 +34,7 @@
 "color" = "Color";
 "create" = "Create";
 "cancel" = "Cancel";
+"save" = "Save";
 
 // Buttons
 "addCategory" = "Add Category";

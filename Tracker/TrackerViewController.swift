@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TrackerViewControllerProtocol: AnyObject {
-    func didTapCreate(tracker: Tracker, to category: String)
+    func didTapCreate(tracker: Tracker, to category: String, type: Constants.TrackerType)
 }
 
 class TrackerViewController: UIViewController {    
@@ -208,7 +208,7 @@ class TrackerViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    private func resetSearchBar() {
+    private func resetSearchBar() { // FIXME: при скрытии отображаются пустые категории (без трекеров)
         searchBar.text = nil
         searchBar.resignFirstResponder()
         filterTrackers(searchText: "")
@@ -244,6 +244,7 @@ extension TrackerViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
         let oldSectionCount = collectionView.numberOfSections
         updateVisibleTrackers(updateUI: false)
+        updatePlaceholderState()
         let newSectionCount = visibleCategories?.count ?? 0
 
         if oldSectionCount != newSectionCount || !update.inserted.isEmpty {
@@ -259,17 +260,25 @@ extension TrackerViewController: TrackerStoreDelegate {
                 collectionView.moveItem(at: move.from, to: move.to)
             }
         }
-
-        updatePlaceholderState()
     }
 }
 
 
 // MARK: - TrackerViewControllerProtocol
 extension TrackerViewController: TrackerViewControllerProtocol {
-    func didTapCreate(tracker: Tracker, to category: String) {
-        trackerStore.createTracker(tracker, to: category)
-        updatePlaceholderState()
+    func didTapCreate(tracker: Tracker, to category: String, type: Constants.TrackerType) {
+        switch type {
+        case .habbit, .event:
+            trackerStore.createTracker(tracker, to: category)
+            updatePlaceholderState()
+        case .edit:
+            trackerStore.updateTracker(tracker, to: category)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in // FIXME: - убрать
+                self?.updateVisibleTrackers()
+            }
+            
+        }
     }
 }
 
@@ -400,16 +409,27 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
-                
+
         return UIContextMenuConfiguration(actionProvider: { actions in
-            let edit = UIAction(title: "Изменить") { _ in }
+            let edit = UIAction(title: "Изменить") { [weak self] _ in
+                guard
+                    let self,
+                    let tracker = visibleCategories?[indexPath.section].trackers[indexPath.row]
+                else { return }
+                
+                let createTrackerVC = CreateTrackerViewController(delegate: self, trackerType: .edit, tracker: tracker)
+                present(UINavigationController(rootViewController: createTrackerVC), animated: true)
+            }
+
             let delete = UIAction(title: "Удалить", image: nil, attributes: .destructive) { [weak self] _ in
-                guard let self else { return }
+                guard
+                    let self,
+                    let tracker = visibleCategories?[indexPath.section].trackers[indexPath.row]
+                else { return }
                 
                 let actions = [
                     AlertAction(title: "Удалить", style: .destructive, handler: {
-                        self.trackerStore.deleteTracker(at: indexPath)
-                        self.updateVisibleTrackers()
+                        self.trackerStore.deleteTracker(with: tracker.id)
                     }),
                     AlertAction(title: "Отмена", style: .cancel, handler: {})
                 ]

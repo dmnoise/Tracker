@@ -25,6 +25,7 @@
 "newHabit" = "Neue Gewohnheit";
 "newEvent" = "Neues unregelmäßiges Ereignis";
 "newCategory" = "Neue Kategorie";
+"editingHabit" = "Gewohnheitsbearbeitung";
 "textInputTracker" = "Trackername eingeben";
 "textInputCategory" = "Kategorietitel eingeben";
 "category" = "Kategorie";
@@ -33,6 +34,7 @@
 "color" = "Farbe";
 "create" = "Erstellen";
 "cancel" = "Abbrechen";
+"save" = "Erhaltung";
 
 // Кнопки
 "addCategory" = "Kategorie hinzufügen";
