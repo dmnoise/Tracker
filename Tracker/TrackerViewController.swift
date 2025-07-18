@@ -36,6 +36,7 @@ class TrackerViewController: UIViewController {
         obj.backgroundColor = .yaBlue
         obj.layer.cornerRadius = 16
         obj.contentEdgeInsets = UIEdgeInsets(top: 14, left: 20, bottom: 14, right: 20)
+        obj.addTarget(self, action: #selector(openFiltres), for: .touchUpInside)
         
         return obj
     }()
@@ -104,6 +105,8 @@ class TrackerViewController: UIViewController {
         
         trackerStore.delegate = self
         searchBar.delegate = self
+        
+        UserDefaults.standard.removeObject(forKey: "selectedFilter")
     }
 
     
@@ -244,6 +247,14 @@ class TrackerViewController: UIViewController {
             UINavigationController(rootViewController: SelectTypeTrackerViewController(delegate: self)),
             animated: true
         )
+    }
+    
+    @objc private func openFiltres() {
+        
+        let viewModel = FiltersViewModel(selectedIndexPath: nil)
+        let viewController = FiltersViewController(viewModel: viewModel)
+        
+        present( UINavigationController(rootViewController: viewController), animated: true)
     }
 }
 

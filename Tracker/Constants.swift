@@ -14,4 +14,11 @@ enum Constants {
         case event
         case edit
     }
+    
+    enum FilterType: String, Codable {
+        case all
+        case today
+        case finished
+        case unfinished
+    }
 }
