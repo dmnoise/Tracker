@@ -83,12 +83,15 @@ class TrackerViewController: UIViewController {
     private let trackerStore = TrackerStore()
     private let categoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
+    private let defaults = UserDefaults.standard
     
     private let paramCV = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        defaults.selectedFilter = .all
         
         updateVisibleTrackers()
         setupUI()
@@ -99,8 +102,6 @@ class TrackerViewController: UIViewController {
         
         trackerStore.delegate = self
         searchBar.delegate = self
-        
-        UserDefaults.standard.removeObject(forKey: "selectedFilter")
     }
     
     
@@ -180,11 +181,10 @@ class TrackerViewController: UIViewController {
     }
     
     private func updatePlaceholderState(isFind: Bool = false) {
-        
         let image = !isFind ? UIImage(resource: .superStar) : UIImage(resource: .suspiciousMan)
         imageView.image = image
         label.text = !isFind ? NSLocalizedString("trackerPlaceholder", comment: "") : "Ничего не найдено"
-        
+                
         let isHidden = !(visibleCategories?.isEmpty ?? true)
         placeholderView.isHidden = isHidden
         filterButton.isHidden = !isHidden
@@ -206,7 +206,31 @@ class TrackerViewController: UIViewController {
         
         completedTrackers = trackerRecordStore.records
         categories = categoryStore.categories
-        visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
+        
+        switch defaults.selectedFilter {
+        case .all:
+            visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
+            
+        case .today:
+            visibleCategories = categories?.filteredHabitsAndEvents(on: Date(), recordTrackers: completedTrackers)
+            if let datePicker = navigationItem.rightBarButtonItem?.customView as? UIDatePicker {
+                datePicker.date = Date()
+            }
+            
+        case .finished:
+            visibleCategories = categories?.filteredByCompletionState(
+                completedTrackers: completedTrackers,
+                selectedDate: selectedDate,
+                isFinished: true
+            )
+
+        case .unfinished:
+            visibleCategories = categories?.filteredByCompletionState(
+                completedTrackers: completedTrackers,
+                selectedDate: selectedDate,
+                isFinished: false
+            )
+        }
         
         if updateUI {
             updatePlaceholderState()
@@ -215,13 +239,12 @@ class TrackerViewController: UIViewController {
     }
     
     private func filterTrackers(searchText: String) {
-        guard let categories else { return }
+        guard let visibleCategories else { return }
         
         if searchText.isEmpty {
             updateVisibleTrackers()
-            updatePlaceholderState()
         } else {
-            visibleCategories = categories.compactMap { category in
+            self.visibleCategories = visibleCategories.compactMap { category in
                 let filteredTrackers = category.trackers.filter { $0.name.lowercased().contains(searchText.lowercased()) }
                 guard !filteredTrackers.isEmpty else { return nil }
                 return TrackerCategory(title: category.title, trackers: filteredTrackers)
@@ -259,7 +282,6 @@ class TrackerViewController: UIViewController {
         
         resetSearchBar()
         updateVisibleTrackers()
-        collectionView.reloadData()
     }
     
     @objc private func createTracker() {
@@ -271,9 +293,21 @@ class TrackerViewController: UIViewController {
     
     @objc private func openFiltres() {
         let viewModel = FiltersViewModel(selectedIndexPath: nil)
-        let viewController = FiltersViewController(viewModel: viewModel)
+        let viewController = FiltersViewController(delegate: self, viewModel: viewModel)
         
         present( UINavigationController(rootViewController: viewController), animated: true)
+    }
+}
+
+// MARK: - FiltersViewControllerDelegate
+extension TrackerViewController: FiltersViewControllerDelegate {
+    func didSelectedFilter(type: Constants.FilterType) {
+        updateVisibleTrackers()
+        
+        let filterIsActive = type == .finished || type == .unfinished
+        let filterTitleColor: UIColor = filterIsActive ? .lightRed : .yaWhite
+        filterButton.setTitleColor(filterTitleColor, for: .normal)
+        updatePlaceholderState(isFind: filterIsActive)
     }
 }
 

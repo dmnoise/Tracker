@@ -7,7 +7,12 @@
 
 import UIKit
 
+protocol FiltersViewControllerDelegate {
+    func didSelectedFilter(type: Constants.FilterType)
+}
+
 final class FiltersViewController: UIViewController {
+    weak var delegate: TrackerViewController?
     private let viewModel: FiltersViewModel
     private let defaults = UserDefaults.standard
     
@@ -34,9 +39,10 @@ final class FiltersViewController: UIViewController {
     }()
     
     // MARK: - Init
-    init(viewModel: FiltersViewModel) {
+    init(delegate: TrackerViewController, viewModel: FiltersViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        self.delegate = delegate
     }
     
     required init?(coder: NSCoder) {
@@ -93,7 +99,9 @@ final class FiltersViewController: UIViewController {
     
     private func saveSelectedFilter(at indexPath: IndexPath) {
         let filterType = viewModel.filteres[indexPath.row].type
-        defaults.set(filterType.rawValue, forKey: "selectedFilter")
+        defaults.selectedFilter = filterType
+        
+        delegate?.didSelectedFilter(type: filterType)
     }
 }
 
