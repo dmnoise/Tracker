@@ -11,7 +11,7 @@ protocol TrackerViewControllerProtocol: AnyObject {
     func didTapCreate(tracker: Tracker, to category: String, type: Constants.TrackerType)
 }
 
-class TrackerViewController: UIViewController {    
+class TrackerViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("tracker", comment: "")
@@ -43,7 +43,6 @@ class TrackerViewController: UIViewController {
     
     private lazy var label: UILabel = {
         let obj = UILabel()
-        obj.text = NSLocalizedString("trackerPlaceholder", comment: "")
         obj.font = .systemFont(ofSize: 12)
         obj.textColor = .yaBlack
         obj.sizeToFit()
@@ -53,12 +52,7 @@ class TrackerViewController: UIViewController {
         return obj
     }()
     
-    private lazy var imageView: UIImageView = {
-        let image = UIImage(resource: .superStar)
-        let obj = UIImageView(image: image)
-        
-        return obj
-    }()
+    private lazy var imageView = UIImageView()
     
     private lazy var placeholderView: UIStackView = {
         let obj = UIStackView()
@@ -91,7 +85,7 @@ class TrackerViewController: UIViewController {
     private let trackerRecordStore = TrackerRecordStore()
     
     private let paramCV = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
-  
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,7 +102,7 @@ class TrackerViewController: UIViewController {
         
         UserDefaults.standard.removeObject(forKey: "selectedFilter")
     }
-
+    
     
     // MARK: - Private methods
     private func setupUI() {
@@ -123,7 +117,7 @@ class TrackerViewController: UIViewController {
         
         placeholderView.addArrangedSubview(imageView)
         placeholderView.addArrangedSubview(label)
-                
+        
         NSLayoutConstraint.activate([
             filterButton.heightAnchor.constraint(equalToConstant: 50),
             filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -178,11 +172,19 @@ class TrackerViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        collectionView.contentInset.bottom = 50
+        collectionView.verticalScrollIndicatorInsets.bottom = 50
+        
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
     }
     
-    private func updatePlaceholderState() {
+    private func updatePlaceholderState(isFind: Bool = false) {
+        
+        let image = !isFind ? UIImage(resource: .superStar) : UIImage(resource: .suspiciousMan)
+        imageView.image = image
+        label.text = !isFind ? NSLocalizedString("trackerPlaceholder", comment: "") : "Ничего не найдено"
+        
         let isHidden = !(visibleCategories?.isEmpty ?? true)
         placeholderView.isHidden = isHidden
         filterButton.isHidden = !isHidden
@@ -205,7 +207,7 @@ class TrackerViewController: UIViewController {
         completedTrackers = trackerRecordStore.records
         categories = categoryStore.categories
         visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
-
+        
         if updateUI {
             updatePlaceholderState()
             collectionView.reloadData()
@@ -216,22 +218,39 @@ class TrackerViewController: UIViewController {
         guard let categories else { return }
         
         if searchText.isEmpty {
-            visibleCategories = categories
+            updateVisibleTrackers()
+            updatePlaceholderState()
         } else {
             visibleCategories = categories.compactMap { category in
                 let filteredTrackers = category.trackers.filter { $0.name.lowercased().contains(searchText.lowercased()) }
                 guard !filteredTrackers.isEmpty else { return nil }
                 return TrackerCategory(title: category.title, trackers: filteredTrackers)
             }
+            
+            updatePlaceholderState(isFind: true)
         }
+        
         collectionView.reloadData()
     }
     
-    private func resetSearchBar() { // FIXME: при скрытии отображаются пустые категории (без трекеров)
+    private func resetSearchBar() {
         searchBar.text = nil
         searchBar.resignFirstResponder()
         filterTrackers(searchText: "")
     }
+    
+    private func indexPath(for trackerID: UUID, in categories: [TrackerCategory]?) -> IndexPath? {
+        guard let categories else { return nil }
+        
+        for (section, category) in categories.enumerated() {
+            if let row = category.trackers.firstIndex(where: { $0.id == trackerID }) {
+                return IndexPath(row: row, section: section)
+            }
+        }
+        
+        return nil
+    }
+    
     
     // MARK: - objc
     @objc private func datePickerValueChanget(_ sender: UIDatePicker) {
@@ -269,24 +288,117 @@ extension TrackerViewController: UISearchBarDelegate {
 // MARK: - TrackerStoreDelegate
 extension TrackerViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
-        let oldSectionCount = collectionView.numberOfSections
+        resetSearchBar()
+        
+        let oldVisibleCategories = visibleCategories
+        
         updateVisibleTrackers(updateUI: false)
         updatePlaceholderState()
-        let newSectionCount = visibleCategories?.count ?? 0
-
-        if oldSectionCount != newSectionCount || !update.inserted.isEmpty {
+        
+        if shouldReloadCollectionView(
+            oldCategories: oldVisibleCategories,
+            newCategories: visibleCategories,
+            update: update
+        ) {
             collectionView.reloadData()
+        } else {
+            performOptimizedUpdate(
+                from: oldVisibleCategories,
+                to: visibleCategories
+            )
+        }
+    }
+    
+    private func shouldReloadCollectionView(
+        oldCategories: [TrackerCategory]?,
+        newCategories: [TrackerCategory]?,
+        update: TrackerStoreUpdate
+    ) -> Bool {
+        if oldCategories?.count != newCategories?.count {
+            return true
+        }
+        
+        if !update.moved.isEmpty {
+            return true
+        }
+        
+        if !update.inserted.isEmpty && !update.deleted.isEmpty {
+            return true
+        }
+
+        let totalChanges = update.inserted.count + update.deleted.count + update.updated.count
+        if totalChanges > 5 {
+            return true
+        }
+        
+        return false
+    }
+    
+    private func performOptimizedUpdate(
+        from oldCategories: [TrackerCategory]?,
+        to newCategories: [TrackerCategory]?
+    ) {
+        let changes = calculateVisibleChanges(
+            from: oldCategories,
+            to: newCategories
+        )
+        
+        if changes.inserted.isEmpty && changes.deleted.isEmpty && changes.updated.isEmpty {
             return
         }
         
         collectionView.performBatchUpdates {
-            collectionView.insertItems(at: update.inserted)
-            collectionView.deleteItems(at: update.deleted)
-            collectionView.reloadItems(at: update.updated)
-            for move in update.moved {
-                collectionView.moveItem(at: move.from, to: move.to)
+            if !changes.deleted.isEmpty {
+                collectionView.deleteItems(at: changes.deleted)
+            }
+            if !changes.inserted.isEmpty {
+                collectionView.insertItems(at: changes.inserted)
+            }
+            if !changes.updated.isEmpty {
+                collectionView.reloadItems(at: changes.updated)
             }
         }
+    }
+    
+    private func calculateVisibleChanges(
+        from oldCategories: [TrackerCategory]?,
+        to newCategories: [TrackerCategory]?
+    ) -> (inserted: [IndexPath], deleted: [IndexPath], updated: [IndexPath]) {
+        
+        let oldTrackers = oldCategories?.flatMap { $0.trackers } ?? []
+        let newTrackers = newCategories?.flatMap { $0.trackers } ?? []
+        
+        let oldIDs = oldTrackers.map { $0.id }
+        let newIDs = newTrackers.map { $0.id }
+        
+        let deletedIDs = Set(oldIDs).subtracting(newIDs)
+        let insertedIDs = Set(newIDs).subtracting(oldIDs)
+        let commonIDs = Set(oldIDs).intersection(newIDs)
+        
+        let deletedIndexPaths = deletedIDs.compactMap { id in
+            indexPath(for: id, in: oldCategories)
+        }
+        
+        let insertedIndexPaths = insertedIDs.compactMap { id in
+            indexPath(for: id, in: newCategories)
+        }
+        
+        let updatedIndexPaths = commonIDs.compactMap { id -> IndexPath? in
+            guard
+                let oldTracker = oldTrackers.first(where: { $0.id == id }),
+                let newTracker = newTrackers.first(where: { $0.id == id }),
+                oldTracker != newTracker,
+                let indexPath = indexPath(for: id, in: newCategories)
+            else { return nil }
+            
+            return indexPath
+        }
+        
+        return (
+            inserted: insertedIndexPaths,
+            deleted: deletedIndexPaths,
+            updated: updatedIndexPaths
+        )
     }
 }
 
@@ -303,8 +415,7 @@ extension TrackerViewController: TrackerViewControllerProtocol {
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in // FIXME: - убрать
                 self?.updateVisibleTrackers()
-            }
-            
+            }            
         }
     }
 }
@@ -354,7 +465,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         else {
             return UICollectionViewCell()
         }
-         
+        
         cell.delegate = self
         cell.configure(
             indexPath: indexPath,
@@ -394,7 +505,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
         
-        if offsetY + frameHeight >= contentHeight - 20 {
+        if offsetY + frameHeight >= contentHeight + 30 {
             UIView.animate(withDuration: 0.2) { [weak self] in
                 self?.filterButton.alpha = 0
             }
@@ -441,18 +552,18 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         // Иначе не будет анимироваться больше ячейки
         cell.contentView.clipsToBounds = false
-
+        
         let targetedView = cell.cardView
         let parameters = UIPreviewParameters()
         parameters.visiblePath = UIBezierPath(roundedRect: targetedView.bounds, cornerRadius: targetedView.layer.cornerRadius)
         
         return UITargetedPreview(view: targetedView, parameters: parameters)
     }
-
+    
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
-
+        
         return UIContextMenuConfiguration(actionProvider: { actions in
             let edit = UIAction(title: "Изменить") { [weak self] _ in
                 guard
@@ -463,7 +574,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
                 let createTrackerVC = CreateTrackerViewController(delegate: self, trackerType: .edit, tracker: tracker)
                 present(UINavigationController(rootViewController: createTrackerVC), animated: true)
             }
-
+            
             let delete = UIAction(title: "Удалить", image: nil, attributes: .destructive) { [weak self] _ in
                 guard
                     let self,
