@@ -269,8 +269,7 @@ class TrackerViewController: UIViewController {
         )
     }
     
-    @objc private func openFiltres() {
-        
+    @objc private func openFiltres() {        
         let viewModel = FiltersViewModel(selectedIndexPath: nil)
         let viewController = FiltersViewController(viewModel: viewModel)
         
@@ -409,13 +408,8 @@ extension TrackerViewController: TrackerViewControllerProtocol {
         switch type {
         case .habbit, .event:
             trackerStore.createTracker(tracker, to: category)
-            updatePlaceholderState()
         case .edit:
             trackerStore.updateTracker(tracker, to: category)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in // FIXME: - убрать
-                self?.updateVisibleTrackers()
-            }            
         }
     }
 }
