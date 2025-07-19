@@ -82,19 +82,25 @@ final class FiltersViewController: UIViewController {
                 
                 let isSelected = indexPath == selectedIndexPath
                 (cell as? CategoryTableViewCell)?.setSelected(isSelected)
+                
+                if isSelected {
+                    saveSelectedFilter(at: indexPath)
+                    dismiss(animated: true)
+                }
             }
         }
+    }
+    
+    private func saveSelectedFilter(at indexPath: IndexPath) {
+        let filterType = viewModel.filteres[indexPath.row].type
+        defaults.set(filterType.rawValue, forKey: "selectedFilter")
     }
 }
 
 // MARK: - UITableViewDelegate
 extension FiltersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         viewModel.selectRow(at: indexPath)
-        let filterType = viewModel.filteres[indexPath.row].type.rawValue
-        defaults.set(filterType, forKey: "selectedFilter")
-        
         tableView.deselectRow(at: indexPath, animated: false)
     }
 }

@@ -269,7 +269,7 @@ class TrackerViewController: UIViewController {
         )
     }
     
-    @objc private func openFiltres() {        
+    @objc private func openFiltres() {
         let viewModel = FiltersViewModel(selectedIndexPath: nil)
         let viewController = FiltersViewController(viewModel: viewModel)
         

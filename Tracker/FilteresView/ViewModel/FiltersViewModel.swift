@@ -34,7 +34,11 @@ final class FiltersViewModel {
     
     func cellViewModel(at indexPath: IndexPath) -> CategoryCellViewModel {
         let filter = filteres[indexPath.row]
-        let isSelected = selectedIndexPath.value == indexPath
+        var isSelected = selectedIndexPath.value == indexPath
+        
+        if filter.type == .all || filter.type == .today { // по заданию на первые два не нужна галка
+            isSelected = false
+        }
         
         return CategoryCellViewModel(title: filter.title, isSelected: isSelected)
     }
