@@ -450,11 +450,11 @@ extension TrackerViewController: TrackerViewControllerProtocol {
 
 // MARK: - TrackerCellDelegate
 extension TrackerViewController: TrackerCellDelegate {
-    func didTapCompletedButton(at indexPath: IndexPath, isCompleted: Bool) {
+    func didTapCompletedButton(at tracker: Tracker, isCompleted: Bool) {
         
         guard
             selectedDate <= Date(),
-            let tracker = visibleCategories?[indexPath.section].trackers[indexPath.row]
+            let indexPath = indexPath(for: tracker.id, in: visibleCategories)
         else { return }
         
         let record = TrackerRecord(trackerID: tracker.id, date: selectedDate)
@@ -463,7 +463,8 @@ extension TrackerViewController: TrackerCellDelegate {
             if isCompleted {
                 try trackerRecordStore.addRecord(record)
             } else {
-                try trackerRecordStore.removeRecord(record)
+                let isEmptyShedue = tracker.schedule.isEmpty
+                try trackerRecordStore.removeRecord(record, ignoreData: isEmptyShedue)
             }
             
             updateVisibleTrackers(updateUI: false)

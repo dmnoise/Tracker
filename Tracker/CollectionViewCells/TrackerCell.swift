@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
-    func didTapCompletedButton(at indexPath: IndexPath, isCompleted: Bool)
+    func didTapCompletedButton(at tracker: Tracker, isCompleted: Bool)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -66,7 +66,7 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private(set) var trackerID: UUID?
+    private(set) var tracker: Tracker?
     private var indexPath: IndexPath?
     private var isCompleted = false
     private var countDays: Int = 0 {
@@ -94,7 +94,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Public Methods
     func configure(indexPath: IndexPath, tracker: Tracker, isCompletedToday: Bool, countDays: Int) {
         self.indexPath = indexPath
-        trackerID = tracker.id
+        self.tracker = tracker
         emojiLabel.text = String(tracker.emoji)
         textLabel.text = tracker.name
         cardView.backgroundColor = tracker.color
@@ -108,14 +108,13 @@ final class TrackerCell: UICollectionViewCell {
     func changeCompletedButtonStatus() {
         isCompleted.toggle()
         countDays += isCompleted ? 1 : -1
-        
         updateCompletedButtonStatus()
     }
     
     // MARK: - objc
     @objc private func didTapCompledetButton() {
-        guard let indexPath else { return }
-        delegate?.didTapCompletedButton(at: indexPath, isCompleted: !isCompleted)
+        guard let tracker else { return }
+        delegate?.didTapCompletedButton(at: tracker, isCompleted: !isCompleted)
     }
     
     

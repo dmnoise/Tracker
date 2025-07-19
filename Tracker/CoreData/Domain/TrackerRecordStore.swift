@@ -48,13 +48,16 @@ final class TrackerRecordStore {
         }
     }
     
-    func removeRecord(_ record: TrackerRecord) throws {
-        let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-        request.predicate = NSPredicate(
-            format: "trackerId == %@ AND date == %@",
-            record.trackerID.uuidString as CVarArg,
-            record.date as NSDate
+    func removeRecord(_ record: TrackerRecord, ignoreData: Bool = false) throws {
+        let predicate = ignoreData
+        ? NSPredicate(format: "trackerId == %@", record.trackerID.uuidString as CVarArg)
+        : NSPredicate(format: "trackerId == %@ AND date == %@",
+                      record.trackerID.uuidString as CVarArg,
+                      record.date as NSDate
         )
+        
+        let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        request.predicate = predicate
         
         do {
             let results = try context.fetch(request)
