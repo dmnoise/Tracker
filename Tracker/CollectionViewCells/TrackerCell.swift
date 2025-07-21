@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
-    func didTapCompletedButton(at indexPath: IndexPath, isCompleted: Bool)
+    func didTapCompletedButton(at tracker: Tracker, isCompleted: Bool)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -18,7 +18,7 @@ final class TrackerCell: UICollectionViewCell {
     static let identifier = "TrackerCell"
     
     //MARK: - UI
-    private lazy var cardView: UIView = {
+    private(set) lazy var cardView: UIView = {
         let obj = UIView()
         obj.backgroundColor = .cGreen
         obj.layer.cornerRadius = 16
@@ -50,9 +50,8 @@ final class TrackerCell: UICollectionViewCell {
     
     private lazy var counterDaysLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .black
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 12)
-        obj.text = "0 дней"
         
         return obj
     }()
@@ -67,12 +66,16 @@ final class TrackerCell: UICollectionViewCell {
         return obj
     }()
     
-    private(set) var trackerID: UUID?
+    private(set) var tracker: Tracker?
     private var indexPath: IndexPath?
     private var isCompleted = false
     private var countDays: Int = 0 {
         didSet {
-            counterDaysLabel.text = "\(countDays) \(dayWord(for: countDays))"
+            let daysString = String.localizedStringWithFormat(
+                NSLocalizedString("countDays", comment: "Кол-во отмеченных дней"),
+                countDays
+            )
+            counterDaysLabel.text = daysString
         }
     }
     
@@ -91,7 +94,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Public Methods
     func configure(indexPath: IndexPath, tracker: Tracker, isCompletedToday: Bool, countDays: Int) {
         self.indexPath = indexPath
-        trackerID = tracker.id
+        self.tracker = tracker
         emojiLabel.text = String(tracker.emoji)
         textLabel.text = tracker.name
         cardView.backgroundColor = tracker.color
@@ -105,14 +108,13 @@ final class TrackerCell: UICollectionViewCell {
     func changeCompletedButtonStatus() {
         isCompleted.toggle()
         countDays += isCompleted ? 1 : -1
-        
         updateCompletedButtonStatus()
     }
     
     // MARK: - objc
     @objc private func didTapCompledetButton() {
-        guard let indexPath else { return }
-        delegate?.didTapCompletedButton(at: indexPath, isCompleted: !isCompleted)
+        guard let tracker else { return }
+        delegate?.didTapCompletedButton(at: tracker, isCompleted: !isCompleted)
     }
     
     
@@ -130,26 +132,8 @@ final class TrackerCell: UICollectionViewCell {
         let image: ImageResource = isCompleted ? .done : .plus
         let opacity: Float = isCompleted ? 0.3 : 1.0
         
-        completeButton.setImage(UIImage(resource: image), for: .normal)
+        completeButton.setImage(UIImage(resource: image).withTintColor(.background), for: .normal)
         completeButton.layer.opacity = opacity
-    }
-    
-    private func dayWord(for number: Int) -> String {
-        let remainder10 = number % 10
-        let remainder100 = number % 100
-        
-        if remainder100 >= 11 && remainder100 <= 14 {
-            return "дней"
-        }
-        
-        switch remainder10 {
-        case 1:
-            return "день"
-        case 2, 3, 4:
-            return "дня"
-        default:
-            return "дней"
-        }
     }
     
     private func setupConstraint() {

@@ -1,0 +1,59 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Dmitriy Noise on 16.07.2025.
+  
+*/
+
+// Заголовки
+"tracker" = "Трекер";
+"find" = "Поиск";
+"stats" = "Статистика";
+
+// Tab bar
+"tabBarTrackers" = "Трекеры";
+"tabBarStats" = "Статистика";
+
+// Экран создания трекера
+"createTracker" = "Создание трекера";
+"buttonHabit" = "Привычка";
+"buttonEvent" = "Нерегулярное событие";
+"characterLimit" = "Ограничение %d символов";
+
+// Экран создание привычки/cобытия
+"newHabit" = "Новая привычка";
+"newEvent" = "Новое нерегулярное событие";
+"newCategory" = "Новая категория";
+"editingHabit" = "Редактирование привычки";
+"textInputTracker" = "Введите название трекера";
+"textInputCategory" = "Введите название категории";
+"category" = "Категория";
+"schedue" = "Расписание";
+"emoji" = "Emoji";
+"color" = "Цвет";
+"create" = "Создать";
+"cancel" = "Отменить";
+"save" = "Сохранить";
+
+// Кнопки
+"addCategory" = "Добавить категорию";
+"ready" = "Готово";
+"filters" = "Фильтры";
+
+// Заглушки
+"findPlaceholder" = "Ничего не найдено";
+"trackerPlaceholder" = "Что будем отслеживать?";
+"statsPlaceholder" = "Анализировать пока нечего";
+"categoryPlaceholder" = "Привычки и события можно\nобьеденять по смыслу"; 
+
+// Онбординг
+"firstScreen" = "Отслеживайте только то, что хотите";
+"twoScreen" = "Даже если это не литры воды и йога";
+"technology" = "Вот это технологии!";
+
+// Статистика
+"bestPeriod" = "Лучший период";
+"idealDays" = "Идеальные дени";
+"trackersCompleted" = "Трекеров завершено";
+"average" = "Среднее значение";

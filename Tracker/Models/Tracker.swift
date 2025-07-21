@@ -56,3 +56,12 @@ extension Tracker {
     }
 }
 
+extension Tracker: Equatable {
+    static func == (lhs: Tracker, rhs: Tracker) -> Bool {
+        return lhs.id == rhs.id &&
+               lhs.name == rhs.name &&
+               lhs.color == rhs.color &&
+               lhs.emoji == rhs.emoji &&
+               lhs.schedule == rhs.schedule
+    }
+}

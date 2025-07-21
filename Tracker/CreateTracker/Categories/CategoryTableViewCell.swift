@@ -37,7 +37,7 @@ final class CategoryTableViewCell: UITableViewCell {
     // MARK: - Private methods
     private func setupUI() {
         contentView.addSubviews(checkmarkImageView)
-        contentView.backgroundColor = .fieldBackground
+        contentView.backgroundColor = .backgroundTable
         
         NSLayoutConstraint.activate([
             checkmarkImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

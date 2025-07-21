@@ -12,5 +12,13 @@ enum Constants {
     enum TrackerType {
         case habbit
         case event
+        case edit
+    }
+    
+    enum FilterType: String, Codable {
+        case all
+        case today
+        case finished
+        case unfinished
     }
 }

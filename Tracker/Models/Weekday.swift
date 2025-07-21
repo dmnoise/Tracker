@@ -1,9 +1,4 @@
-//
-//  Weekday.swift
-//  Tracker
-//
-//  Created by Dmitriy Noise on 20.05.2025.
-//
+import Foundation
 
 enum Weekday: Int, CaseIterable, Hashable {
     case monday = 0
@@ -20,40 +15,18 @@ enum Weekday: Int, CaseIterable, Hashable {
     }
     
     var name: String {
-        switch self {
-        case .monday:
-            return "Понедельник"
-        case .tuesday:
-            return "Вторник"
-        case .wednesday:
-            return "Среда"
-        case .thursday:
-            return "Четверг"
-        case .friday:
-            return "Пятница"
-        case .saturday:
-            return "Суббота"
-        case .sunday:
-            return "Воскресенье"
-        }
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        
+        let weekdayIndex = (self.rawValue + 1) % 7
+        return formatter.weekdaySymbols[weekdayIndex].capitalized
     }
-    
+
     var shortName: String {
-        switch self {
-        case .monday:
-            return "Пн"
-        case .tuesday:
-            return "Вт"
-        case .wednesday:
-            return "Ср"
-        case .thursday:
-            return "Чт"
-        case .friday:
-            return "Пт"
-        case .saturday:
-            return "Сб"
-        case .sunday:
-            return "Вс"
-        }
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        
+        let weekdayIndex = (self.rawValue + 1) % 7
+        return formatter.shortWeekdaySymbols[weekdayIndex].capitalized
     }
 }

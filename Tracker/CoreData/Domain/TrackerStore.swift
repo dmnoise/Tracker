@@ -86,6 +86,58 @@ final class TrackerStore: NSObject {
             print("Ошибка сохранения трекера :(\nError: \(error.localizedDescription)")
         }
     }
+    
+    func updateTracker(_ trackerModel: Tracker, to category: String) {
+        guard let trackerCategoryStore else { return }
+        
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", trackerModel.id as CVarArg)
+        
+        do {
+            guard let tracker = try context.fetch(request).first else { return }
+            tracker.name = trackerModel.name
+            tracker.emoji = String(trackerModel.emoji)
+            tracker.colorHex = uiColorMarshalling.hexString(from: trackerModel.color)
+            tracker.schedule = trackerModel.schedule.toJSONString()
+            tracker.category = trackerCategoryStore.fetchOrCreateCategory(named: category)
+            
+            try context.save()
+        } catch {
+            print("Ошибка обновления трекера: \(error.localizedDescription)")
+            context.rollback()
+        }
+    }
+    
+    func deleteTracker(at indexPath: IndexPath) {
+        let trackerToDelete = fetchedResultsController.object(at: indexPath)
+        context.delete(trackerToDelete)
+        
+        do {
+            try context.save()
+        } catch {
+            print("Ошибка удаления трекера :(\nError: \(error.localizedDescription)")
+        }
+    }
+    
+    func getTracker(at indexPath: IndexPath) -> Tracker? {
+        let findTracker = fetchedResultsController.object(at: indexPath)
+        
+        return Tracker(from: findTracker)
+    }
+    
+    func deleteTracker(with id: UUID) {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        
+        do {
+            guard let tracker = try context.fetch(request).first else { return }
+            context.delete(tracker)
+            try context.save()
+        } catch {
+            print("Ошибка удаления трекера по id :(\nError: \(error.localizedDescription)")
+            context.rollback()
+        }
+    }
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {

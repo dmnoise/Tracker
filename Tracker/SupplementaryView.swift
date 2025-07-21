@@ -12,7 +12,7 @@ final class SupplementaryView: UICollectionReusableView {
         let obj = UILabel()
         obj.textAlignment = .left
         obj.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         
         return obj
     }()

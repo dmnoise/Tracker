@@ -29,8 +29,8 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "Расписание"
-        obj.textColor = .yaBlack
+        obj.text = NSLocalizedString("schedue", comment: "")
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 16)
         
         return obj
@@ -38,10 +38,11 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let obj = UITableView()
-        obj.backgroundColor = .fieldBackground
+        obj.backgroundColor = .backgroundTable
         obj.allowsSelection = false
         obj.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         obj.separatorStyle = .singleLine
+        obj.separatorColor = .customSeparator
         obj.layer.masksToBounds = true
         obj.layer.cornerRadius = 10
         obj.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -51,10 +52,10 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var saveButton: UIButton = {
         let obj = UIButton()
-        obj.backgroundColor = .yaBlack
-        obj.tintColor = .yaWhite
+        obj.backgroundColor = .bigButtonBackground
+        obj.setTitleColor(.bigButtonText, for: .normal)
         obj.layer.cornerRadius = 16
-        obj.setTitle("Готово", for: .normal)
+        obj.setTitle(NSLocalizedString("ready", comment: ""), for: .normal)
         
         return obj
     }()
@@ -72,7 +73,7 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Private methods
     private func setupUI() {
         navigationItem.titleView = titleLabel
-        view.backgroundColor = .yaWhite
+        view.backgroundColor = .background
     }
     
     private func setupTableView() {

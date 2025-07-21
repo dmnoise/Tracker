@@ -16,13 +16,13 @@ final class TabBarController: UITabBarController {
         let statsVC = UINavigationController(rootViewController: StatsViewController())
         
         let tabBatItemTracker = UITabBarItem(
-            title: "Трекеры",
+            title: NSLocalizedString("tabBarTrackers", comment: ""),
             image: UIImage(resource: .tracker),
             selectedImage: nil
         )
         
         let tabBatItemStats = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("tabBarStats", comment: ""),
             image: UIImage(resource: .stats),
             selectedImage: nil
         )
@@ -38,7 +38,7 @@ final class TabBarController: UITabBarController {
     private func setupBorder() {
         tabBar.backgroundImage = UIImage()
         tabBar.shadowImage = UIImage()
-        tabBar.backgroundColor = .yaWhite
+        tabBar.backgroundColor = .background
         
         tabBar.layer.shadowColor = UIColor.tabBarLine.cgColor
         tabBar.layer.shadowOffset = CGSize(width: 0, height: -0.5)

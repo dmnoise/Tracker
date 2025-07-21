@@ -16,7 +16,7 @@ final class WeekdaySwitchCell: UITableViewCell {
     
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 17)
         
         return obj
