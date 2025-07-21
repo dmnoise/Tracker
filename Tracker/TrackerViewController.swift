@@ -213,10 +213,12 @@ class TrackerViewController: UIViewController {
             visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
             
         case .today:
-            visibleCategories = categories?.filteredHabitsAndEvents(on: Date(), recordTrackers: completedTrackers)
             if let datePicker = navigationItem.rightBarButtonItem?.customView as? UIDatePicker {
                 datePicker.date = Date()
             }
+            selectedDate = Date()
+            visibleCategories = categories?.filteredHabitsAndEvents(on: selectedDate, recordTrackers: completedTrackers)
+            defaults.selectedFilter = .all // Сразу сбрасываю, это же разовая акция - вернуться к сегодняшнему дню
             
         case .finished:
             visibleCategories = categories?.filteredByCompletionState(
@@ -239,7 +241,7 @@ class TrackerViewController: UIViewController {
         }
     }
     
-    private func filterTrackers(searchText: String) {
+    private func searchTracker(searchText: String) {
         guard let visibleCategories else { return }
         
         if searchText.isEmpty {
@@ -260,7 +262,7 @@ class TrackerViewController: UIViewController {
     private func resetSearchBar() {
         searchBar.text = nil
         searchBar.resignFirstResponder()
-        filterTrackers(searchText: "")
+        searchTracker(searchText: "")
     }
     
     private func indexPath(for trackerID: UUID, in categories: [TrackerCategory]?) -> IndexPath? {
@@ -314,7 +316,7 @@ extension TrackerViewController: FiltersViewControllerDelegate {
 // MARK: - UISearchBarDelegate
 extension TrackerViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filterTrackers(searchText: searchText)
+        searchTracker(searchText: searchText)
     }
 }
 
