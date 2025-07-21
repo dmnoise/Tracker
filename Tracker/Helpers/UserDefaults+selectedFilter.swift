@@ -26,4 +26,8 @@ extension UserDefaults {
             }
         }
     }
+    
+    var isEnabledFilter: Bool {
+        selectedFilter == .unfinished || selectedFilter == .finished
+    }
 }

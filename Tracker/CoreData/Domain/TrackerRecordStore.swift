@@ -49,12 +49,11 @@ final class TrackerRecordStore {
     }
     
     func removeRecord(_ record: TrackerRecord, ignoreData: Bool = false) throws {
+        print("start delet, ignore date: \(ignoreData)")
+        
         let predicate = ignoreData
         ? NSPredicate(format: "trackerId == %@", record.trackerID.uuidString as CVarArg)
-        : NSPredicate(format: "trackerId == %@ AND date == %@",
-                      record.trackerID.uuidString as CVarArg,
-                      record.date as NSDate
-        )
+        : predicateForTrackerId(record.trackerID, onDay: record.date)
         
         let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         request.predicate = predicate
@@ -63,6 +62,7 @@ final class TrackerRecordStore {
             let results = try context.fetch(request)
             for object in results {
                 context.delete(object)
+                print("ok")
             }
             try context.save()
         } catch {
@@ -89,6 +89,19 @@ final class TrackerRecordStore {
             print("Ошибка fetch\nError: \(error.localizedDescription)")
             return []
         }
+    }
+    
+    // MARK: - Private methods
+    private func predicateForTrackerId(_ trackerId: UUID, onDay date: Date) -> NSPredicate {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        return NSPredicate(
+            format: "trackerId == %@ AND date >= %@ AND date < %@",
+            trackerId as CVarArg,
+            startOfDay as NSDate,
+            endOfDay as NSDate
+        )
     }
 }
 

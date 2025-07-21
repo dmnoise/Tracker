@@ -42,6 +42,7 @@
 "filters" = "Filters";
 
 // Placeholders
+"findPlaceholder" = "Nothing found";
 "trackerPlaceholder" = "What would you like to track?";
 "statsPlaceholder" = "Nothing to analyze yet";
 "categoryPlaceholder" = "Habits and events can be\ngrouped by meaning";

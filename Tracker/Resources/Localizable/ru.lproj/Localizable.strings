@@ -42,6 +42,7 @@
 "filters" = "Фильтры";
 
 // Заглушки
+"findPlaceholder" = "Ничего не найдено";
 "trackerPlaceholder" = "Что будем отслеживать?";
 "statsPlaceholder" = "Анализировать пока нечего";
 "categoryPlaceholder" = "Привычки и события можно\nобьеденять по смыслу"; 

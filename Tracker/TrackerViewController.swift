@@ -181,13 +181,14 @@ class TrackerViewController: UIViewController {
     }
     
     private func updatePlaceholderState(isFind: Bool = false) {
-        let image = !isFind ? UIImage(resource: .superStar) : UIImage(resource: .suspiciousMan)
+        let isFilterd = defaults.isEnabledFilter
+        let image = !isFind && !isFilterd ? UIImage(resource: .superStar) : UIImage(resource: .suspiciousMan)
         imageView.image = image
-        label.text = !isFind ? NSLocalizedString("trackerPlaceholder", comment: "") : "Ничего не найдено"
+        label.text = !isFind && !isFilterd ? NSLocalizedString("trackerPlaceholder", comment: "") : NSLocalizedString("findPlaceholder", comment: "")
                 
         let isHidden = !(visibleCategories?.isEmpty ?? true)
         placeholderView.isHidden = isHidden
-        filterButton.isHidden = !isHidden
+        filterButton.isHidden = (!isHidden && !isFilterd)
     }
     
     private func countOfCompleted(for trackerID: UUID) -> Int {
@@ -273,7 +274,6 @@ class TrackerViewController: UIViewController {
         
         return nil
     }
-    
     
     // MARK: - objc
     @objc private func datePickerValueChanget(_ sender: UIDatePicker) {
