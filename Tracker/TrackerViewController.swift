@@ -89,15 +89,6 @@ class TrackerViewController: UIViewController {
     private let paramCV = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     // MARK: - Lifecycle
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        analytic.reportEvent(
-            "tracker",
-            params: ["event": "open", "screen": "Main" ]
-        )
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -112,6 +103,15 @@ class TrackerViewController: UIViewController {
         
         trackerStore.delegate = self
         searchBar.delegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        analytic.reportEvent(
+            "tracker",
+            params: ["event": "open", "screen": "Main" ]
+        )
     }
     
     override func viewDidDisappear(_ animated: Bool) {
