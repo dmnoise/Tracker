@@ -84,10 +84,20 @@ class TrackerViewController: UIViewController {
     private let categoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
     private let defaults = UserDefaults.standard
+    private let analytic = AnalyticService.shared
     
     private let paramCV = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     // MARK: - Lifecycle
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        analytic.reportEvent(
+            "tracker",
+            params: ["event": "open", "screen": "Main" ]
+        )
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -102,6 +112,15 @@ class TrackerViewController: UIViewController {
         
         trackerStore.delegate = self
         searchBar.delegate = self
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        analytic.reportEvent(
+            "tracker",
+            params: ["event": "close", "screen": "Main" ]
+        )
     }
     
     
@@ -291,6 +310,11 @@ class TrackerViewController: UIViewController {
             UINavigationController(rootViewController: SelectTypeTrackerViewController(delegate: self)),
             animated: true
         )
+        
+        analytic.reportEvent(
+            "create_new_tracker",
+            params: ["event": "click", "screen": "Main", "item": "add_track" ]
+        )
     }
     
     @objc private func openFiltres() {
@@ -298,6 +322,11 @@ class TrackerViewController: UIViewController {
         let viewController = FiltersViewController(delegate: self, viewModel: viewModel)
         
         present( UINavigationController(rootViewController: viewController), animated: true)
+        
+        analytic.reportEvent(
+            "open_filters",
+            params: ["event": "click", "screen": "Main", "item": "filter" ]
+        )
     }
 }
 
@@ -476,6 +505,11 @@ extension TrackerViewController: TrackerCellDelegate {
         } catch {
             print("Ошибка изменения записи :(\nError: \(error)")
         }
+        
+        analytic.reportEvent(
+            "tap_complete_tracker",
+            params: ["event": "click", "screen": "Main", "item": "track" ]
+        )
     }
 }
 
@@ -604,6 +638,11 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
                 
                 let createTrackerVC = CreateTrackerViewController(delegate: self, trackerType: .edit, tracker: tracker)
                 present(UINavigationController(rootViewController: createTrackerVC), animated: true)
+                
+                analytic.reportEvent(
+                    "edit_tracker",
+                    params: ["event": "click", "screen": "Main", "item": "edit" ]
+                )
             }
             
             let delete = UIAction(title: "Удалить", image: nil, attributes: .destructive) { [weak self] _ in
@@ -615,6 +654,10 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
                 let actions = [
                     AlertAction(title: "Удалить", style: .destructive, handler: {
                         self.trackerStore.deleteTracker(with: tracker.id)
+                        self.analytic.reportEvent(
+                            "delete_tracker",
+                            params: ["event": "click", "screen": "Main", "item": "delete" ]
+                        )
                     }),
                     AlertAction(title: "Отмена", style: .cancel, handler: {})
                 ]
