@@ -104,12 +104,12 @@ final class StatsViewController: UIViewController {
     private func updateStats() {
         // TODO: доделать тут все и сохранять статистку куда-то
         let trackersFinished = trackerRecordStore.records.count
-        
+
         stats = [
-            Stats(count: 0, description: "Лучший период"),
-            Stats(count: 0, description: "Идеальные дни"),
-            Stats(count: trackersFinished, description: "Трекеров завершено"),
-            Stats(count: 0, description: "Среднее значение")
+            Stats(count: 0, description: NSLocalizedString("bestPeriod", comment: "")),
+            Stats(count: 0, description: NSLocalizedString("idealDays", comment: "")),
+            Stats(count: trackersFinished, description: NSLocalizedString("trackersCompleted", comment: "")),
+            Stats(count: 0, description: NSLocalizedString("average", comment: ""))
         ]
         
         tableView.reloadData()

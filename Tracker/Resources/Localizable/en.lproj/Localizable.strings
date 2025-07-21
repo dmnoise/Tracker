@@ -51,3 +51,9 @@
 "firstScreen" = "Track only what you want";
 "twoScreen" = "Even if it’s not liters of water or yoga";
 "technology" = "Now that's technology!";
+
+// Stats
+"bestPeriod" = "Best Period";
+"idealDays" = "Ideal Days";
+"trackersCompleted" = "Trackers Completed";
+"average" = "Average";

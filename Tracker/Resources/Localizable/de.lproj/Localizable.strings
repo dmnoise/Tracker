@@ -51,3 +51,9 @@
 "firstScreen" = "Verfolge nur, was du wirklich willst";
 "twoScreen" = "Auch wenn es keine Liter Wasser oder Yoga sind";
 "technology" = "Das ist Technologie!";
+
+// Статистика
+"bestPeriod" = "Beste Periode";
+"idealDays" = "Ideale Tage";
+"trackersCompleted" = "Abgeschlossene Tracker";
+"average" = "Durchschnittswert";
