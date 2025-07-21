@@ -19,7 +19,7 @@ final class CategoryCreateViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("newCategory", comment: "")
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 16)
         
         return obj
@@ -28,12 +28,12 @@ final class CategoryCreateViewController: UIViewController {
     private lazy var nameTextField: UITextField = {
         let obj = UITextField()
         obj.font = UIFont.systemFont(ofSize: 17)
-        obj.textColor = .yaBlack
-        obj.backgroundColor = .fieldBackground
+        obj.textColor = .mainText
+        obj.backgroundColor = .backgroundTable
         obj.layer.cornerRadius = 16
         obj.attributedPlaceholder = NSAttributedString(
             string: NSLocalizedString("textInputCategory", comment: ""),
-            attributes: [.foregroundColor: UIColor.yaDarkGray]
+            attributes: [.foregroundColor: UIColor.subtitleLabelText]
         )
         
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
@@ -50,7 +50,7 @@ final class CategoryCreateViewController: UIViewController {
         obj.setTitle(NSLocalizedString("ready", comment: ""), for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
         obj.setTitleColor(.yaWhite, for: .disabled)
-        obj.backgroundColor = .yaBlack
+        obj.backgroundColor = .inactiveCreateButton
         obj.layer.cornerRadius = 16
         
         return obj
@@ -81,7 +81,7 @@ final class CategoryCreateViewController: UIViewController {
     // MARK: - Private methods
     private func setupUI() {
         navigationItem.titleView = titleLabel
-        view.backgroundColor = .yaWhite
+        view.backgroundColor = .background
         view.addTapGestureToHideKeyboard()
         view.addSubviews(nameTextField, createButton)
         
@@ -100,7 +100,9 @@ final class CategoryCreateViewController: UIViewController {
     
     private func createButton(isEnabled: Bool) {
         createButton.isEnabled = isEnabled
-        createButton.backgroundColor = isEnabled ? .yaBlack : .yaDarkGray
+        createButton.backgroundColor = isEnabled ? .bigButtonBackground : .inactiveCreateButton
+        let titleColor: UIColor = isEnabled ? .bigButtonText : .yaWhite
+        createButton.setTitleColor(titleColor, for: .normal)
     }
     
     @objc

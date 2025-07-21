@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func configureNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
+        appearance.backgroundColor = .background
         appearance.shadowColor = .clear
 
         UINavigationBar.appearance().standardAppearance = appearance

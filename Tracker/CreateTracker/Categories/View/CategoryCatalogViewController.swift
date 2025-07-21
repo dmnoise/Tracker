@@ -20,7 +20,7 @@ final class CategoryCatalogViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("category", comment: "")
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 16)
         
         return obj
@@ -30,7 +30,7 @@ final class CategoryCatalogViewController: UIViewController {
         let obj = UILabel()
         obj.text = NSLocalizedString("categoryPlaceholder", comment: "")
         obj.font = .systemFont(ofSize: 12)
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.sizeToFit()
         obj.textAlignment = .center
         obj.numberOfLines = 2
@@ -62,6 +62,7 @@ final class CategoryCatalogViewController: UIViewController {
         let obj = UITableView(frame: .zero, style: .insetGrouped)
         obj.rowHeight = 75
         obj.backgroundColor = .clear
+        obj.separatorColor = .customSeparator
         obj.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         
         obj.allowsSelection = true
@@ -73,8 +74,8 @@ final class CategoryCatalogViewController: UIViewController {
     private lazy var createButton: UIButton = {
         let obj = UIButton()
         obj.setTitle(NSLocalizedString("addCategory", comment: ""), for: .normal)
-        obj.setTitleColor(.yaWhite, for: .normal)
-        obj.backgroundColor = .yaBlack
+        obj.setTitleColor(.bigButtonText, for: .normal)
+        obj.backgroundColor = .bigButtonBackground
         obj.layer.cornerRadius = 16
         
         return obj
@@ -108,7 +109,7 @@ final class CategoryCatalogViewController: UIViewController {
     // MARK: - Private methods
     private func setupUI() {
         view.addSubviews(placeholderView, createButton, tableView)
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         placeholderView.addArrangedSubview(imageView)
         placeholderView.addArrangedSubview(label)
         

@@ -12,7 +12,7 @@ final class StatsViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("stats", comment: "")
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         
         return obj
@@ -21,7 +21,7 @@ final class StatsViewController: UIViewController {
     private lazy var label: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("statsPlaceholder", comment: "")
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = .systemFont(ofSize: 12)
         
         return obj
@@ -39,7 +39,7 @@ final class StatsViewController: UIViewController {
         
         view.addSubviews(titleLabel, imageView, label)
         
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),

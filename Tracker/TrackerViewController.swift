@@ -15,7 +15,7 @@ class TrackerViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("tracker", comment: "")
-        obj.textColor = .black
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         
         return obj
@@ -44,7 +44,7 @@ class TrackerViewController: UIViewController {
     private lazy var label: UILabel = {
         let obj = UILabel()
         obj.font = .systemFont(ofSize: 12)
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.sizeToFit()
         obj.textAlignment = .center
         obj.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -69,7 +69,7 @@ class TrackerViewController: UIViewController {
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()
         )
-        obj.backgroundColor = .yaWhite
+        obj.backgroundColor = .background
         
         return obj
     }()
@@ -107,7 +107,7 @@ class TrackerViewController: UIViewController {
     
     // MARK: - Private methods
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .background
     }
     
     private func setupConstrains() {
@@ -163,7 +163,7 @@ class TrackerViewController: UIViewController {
         }()
         
         navigationItem.leftBarButtonItem = leftButton
-        navigationItem.leftBarButtonItem?.tintColor = UIColor(resource: .yaBlack)
+        navigationItem.leftBarButtonItem?.tintColor = UIColor(resource: .mainText)
         
         navigationItem.rightBarButtonItem = datePicker
         navigationItem.rightBarButtonItem?.tintColor = UIColor(resource: .yaBlack)

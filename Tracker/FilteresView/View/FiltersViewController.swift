@@ -61,7 +61,7 @@ final class FiltersViewController: UIViewController {
     // MARK: - Private methods
     private func setupUI() {
         view.addSubviews(tableView)
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         
         navigationItem.titleView = titleLabel
         

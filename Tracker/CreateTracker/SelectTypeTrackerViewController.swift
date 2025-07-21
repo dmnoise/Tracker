@@ -26,7 +26,7 @@ final class SelectTypeTrackerViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
         obj.text = NSLocalizedString("createTracker", comment: "")
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 16)
         
         return obj
@@ -36,8 +36,8 @@ final class SelectTypeTrackerViewController: UIViewController {
         let obj = UIButton()
         let title = NSLocalizedString("buttonHabit", comment: "")
         obj.setTitle(title, for: .normal)
-        obj.backgroundColor = .yaBlack
-        obj.setTitleColor(.white, for: .normal)
+        obj.backgroundColor = .bigButtonBackground
+        obj.setTitleColor(.bigButtonText, for: .normal)
         obj.setTitleColor(.gray, for: .highlighted)
         obj.layer.cornerRadius = 16
 
@@ -48,8 +48,8 @@ final class SelectTypeTrackerViewController: UIViewController {
         let obj = UIButton()
         let title = NSLocalizedString("buttonEvent", comment: "")
         obj.setTitle(title, for: .normal)
-        obj.backgroundColor = .yaBlack
-        obj.setTitleColor(.white, for: .normal)
+        obj.backgroundColor = .bigButtonBackground
+        obj.setTitleColor(.bigButtonText, for: .normal)
         obj.setTitleColor(.gray, for: .highlighted)
         obj.layer.cornerRadius = 16
 
@@ -67,7 +67,7 @@ final class SelectTypeTrackerViewController: UIViewController {
     
     // MARK: - Private methods
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         navigationItem.titleView = titleLabel
     }
     

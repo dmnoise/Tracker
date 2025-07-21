@@ -50,7 +50,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private lazy var counterDaysLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .black
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 12)
         
         return obj
@@ -132,7 +132,7 @@ final class TrackerCell: UICollectionViewCell {
         let image: ImageResource = isCompleted ? .done : .plus
         let opacity: Float = isCompleted ? 0.3 : 1.0
         
-        completeButton.setImage(UIImage(resource: image), for: .normal)
+        completeButton.setImage(UIImage(resource: image).withTintColor(.background), for: .normal)
         completeButton.layer.opacity = opacity
     }
     

@@ -59,7 +59,7 @@ final class ScreenView: UIViewController {
         textLabel.text = text
      
         view.addSubviews(backgroundView, textLabel)
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         
         NSLayoutConstraint.activate([
             backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

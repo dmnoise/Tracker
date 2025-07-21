@@ -12,14 +12,14 @@ final class HabitOptionView: UIControl {
     // MARK: - Subviews
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         
         return obj
     }()
     
     private lazy var subtitleLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .yaDarkGray
+        obj.textColor = .subtitleLabelText
         
         return obj
     }()
@@ -27,7 +27,7 @@ final class HabitOptionView: UIControl {
     private lazy var chevronImageView: UIImageView = {
         let obj = UIImageView()
         obj.image = UIImage(systemName: "chevron.right")
-        obj.tintColor = .yaDarkGray
+        obj.tintColor = .subtitleLabelText
         
         return obj
     }()

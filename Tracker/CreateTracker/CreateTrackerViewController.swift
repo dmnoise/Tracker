@@ -33,7 +33,7 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: - UI
     private lazy var titleLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 16)
         
         return obj
@@ -57,12 +57,12 @@ final class CreateTrackerViewController: UIViewController {
     private lazy var nameTextField: UITextField = {
         let obj = UITextField()
         obj.font = UIFont.systemFont(ofSize: 17)
-        obj.textColor = .yaBlack
-        obj.backgroundColor = .fieldBackground
+        obj.textColor = .mainText
+        obj.backgroundColor = .backgroundTable
         obj.layer.cornerRadius = 16
         obj.attributedPlaceholder = NSAttributedString(
             string: NSLocalizedString("textInputTracker", comment: ""),
-            attributes: [.foregroundColor: UIColor.yaDarkGray]
+            attributes: [.foregroundColor: UIColor.subtitleLabelText]
         )
         
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
@@ -88,7 +88,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var countOfDaysLabel: UILabel = {
         let obj = UILabel()
-        obj.textColor = .yaBlack
+        obj.textColor = .mainText
         obj.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         obj.text = "12 дней"
         obj.textAlignment = .center
@@ -100,7 +100,7 @@ final class CreateTrackerViewController: UIViewController {
     private lazy var stackView: UIStackView = {
         let obj = UIStackView()
         obj.axis = .vertical
-        obj.backgroundColor = .fieldBackground
+        obj.backgroundColor = .backgroundTable
         obj.layer.cornerRadius = 16
         obj.alignment = .fill
         obj.distribution = .fill
@@ -114,7 +114,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var separatorView: UIView = {
         let obj = UIView()
-        obj.backgroundColor = .yaDarkGray
+        obj.backgroundColor = .customSeparator
         obj.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         return obj
@@ -137,7 +137,7 @@ final class CreateTrackerViewController: UIViewController {
         obj.setTitle(NSLocalizedString("cancel", comment: "Кнопка отмены создания трекера"), for: .normal)
         obj.setTitleColor(.lightRed, for: .normal)
         obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        obj.backgroundColor = .yaWhite
+        obj.backgroundColor = .background
         obj.layer.borderWidth = 1
         obj.layer.borderColor = UIColor(resource: .lightRed).cgColor
         obj.layer.cornerRadius = 16
@@ -153,7 +153,7 @@ final class CreateTrackerViewController: UIViewController {
         obj.setTitle(textButton, for: .normal)
         obj.setTitleColor(.yaWhite, for: .normal)
         obj.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        obj.backgroundColor = .yaDarkGray
+        obj.backgroundColor = .inactiveCreateButton
         obj.layer.cornerRadius = 16
         obj.isEnabled = false
         
@@ -219,7 +219,7 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         
         switch trackerType {
         case .habbit:
@@ -345,7 +345,9 @@ final class CreateTrackerViewController: UIViewController {
     
     private func changeCreateButton(isEnabled: Bool) {
         createButton.isEnabled = isEnabled
-        createButton.backgroundColor = isEnabled ? .yaBlack : .yaDarkGray
+        createButton.backgroundColor = isEnabled ? .bigButtonBackground : .inactiveCreateButton
+        let titleColor: UIColor = isEnabled ? .bigButtonText : .yaWhite
+        createButton.setTitleColor(titleColor, for: .normal)
     }
     
     private func validateForm() {
