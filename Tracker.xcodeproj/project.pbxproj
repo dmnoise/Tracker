@@ -6,8 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		204808CA2E2E423E0002798D /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 204808C92E2E423E0002798D /* InlineSnapshotTesting */; };
+		204808CC2E2E42400002798D /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 204808CB2E2E42400002798D /* SnapshotTesting */; };
+		204808CE2E2E42430002798D /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 204808CD2E2E42430002798D /* SnapshotTestingCustomDump */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		204808C32E2E422C0002798D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2043A7DD2DD8BB2E003A04F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2043A7E42DD8BB2E003A04F1;
+			remoteInfo = Tracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		2043A7E52DD8BB2E003A04F1 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		204808BF2E2E422C0002798D /* Tracker Screenshot Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tracker Screenshot Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,6 +46,11 @@
 			path = Tracker;
 			sourceTree = "<group>";
 		};
+		204808C02E2E422C0002798D /* Tracker Screenshot Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Tracker Screenshot Tests";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +61,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		204808BC2E2E422C0002798D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				204808CE2E2E42430002798D /* SnapshotTestingCustomDump in Frameworks */,
+				204808CA2E2E423E0002798D /* InlineSnapshotTesting in Frameworks */,
+				204808CC2E2E42400002798D /* SnapshotTesting in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -46,6 +78,8 @@
 			isa = PBXGroup;
 			children = (
 				2043A7E72DD8BB2E003A04F1 /* Tracker */,
+				204808C02E2E422C0002798D /* Tracker Screenshot Tests */,
+				204808C82E2E423E0002798D /* Frameworks */,
 				2043A7E62DD8BB2E003A04F1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,8 +88,16 @@
 			isa = PBXGroup;
 			children = (
 				2043A7E52DD8BB2E003A04F1 /* Tracker.app */,
+				204808BF2E2E422C0002798D /* Tracker Screenshot Tests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		204808C82E2E423E0002798D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +125,32 @@
 			productReference = 2043A7E52DD8BB2E003A04F1 /* Tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
+		204808BE2E2E422C0002798D /* Tracker Screenshot Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 204808C52E2E422C0002798D /* Build configuration list for PBXNativeTarget "Tracker Screenshot Tests" */;
+			buildPhases = (
+				204808BB2E2E422C0002798D /* Sources */,
+				204808BC2E2E422C0002798D /* Frameworks */,
+				204808BD2E2E422C0002798D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				204808C42E2E422C0002798D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				204808C02E2E422C0002798D /* Tracker Screenshot Tests */,
+			);
+			name = "Tracker Screenshot Tests";
+			packageProductDependencies = (
+				204808C92E2E423E0002798D /* InlineSnapshotTesting */,
+				204808CB2E2E42400002798D /* SnapshotTesting */,
+				204808CD2E2E42430002798D /* SnapshotTestingCustomDump */,
+			);
+			productName = "Tracker Screenshot Tests";
+			productReference = 204808BF2E2E422C0002798D /* Tracker Screenshot Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +163,10 @@
 				TargetAttributes = {
 					2043A7E42DD8BB2E003A04F1 = {
 						CreatedOnToolsVersion = 16.3;
+					};
+					204808BE2E2E422C0002798D = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 2043A7E42DD8BB2E003A04F1;
 					};
 				};
 			};
@@ -109,18 +181,29 @@
 			);
 			mainGroup = 2043A7DC2DD8BB2E003A04F1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				204808BA2E2E41850002798D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2043A7E62DD8BB2E003A04F1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				2043A7E42DD8BB2E003A04F1 /* Tracker */,
+				204808BE2E2E422C0002798D /* Tracker Screenshot Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		2043A7E32DD8BB2E003A04F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		204808BD2E2E422C0002798D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -137,7 +220,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		204808BB2E2E422C0002798D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		204808C42E2E422C0002798D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2043A7E42DD8BB2E003A04F1 /* Tracker */;
+			targetProxy = 204808C32E2E422C0002798D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2043A7F92DD8BB2F003A04F1 /* Debug */ = {
@@ -327,6 +425,52 @@
 			};
 			name = Release;
 		};
+		204808C62E2E422C0002798D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4ZJ9V5ZWNC;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.praktikum.tracker.dmtest.Tracker-Screenshot-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tracker";
+			};
+			name = Debug;
+		};
+		204808C72E2E422C0002798D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4ZJ9V5ZWNC;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.praktikum.tracker.dmtest.Tracker-Screenshot-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tracker";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -348,7 +492,45 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		204808C52E2E422C0002798D /* Build configuration list for PBXNativeTarget "Tracker Screenshot Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				204808C62E2E422C0002798D /* Debug */,
+				204808C72E2E422C0002798D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		204808BA2E2E41850002798D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		204808C92E2E423E0002798D /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 204808BA2E2E41850002798D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		204808CB2E2E42400002798D /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 204808BA2E2E41850002798D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		204808CD2E2E42430002798D /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 204808BA2E2E41850002798D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2043A7DD2DD8BB2E003A04F1 /* Project object */;
 }
